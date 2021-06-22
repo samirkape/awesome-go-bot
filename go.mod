@@ -1,4 +1,4 @@
-module example.com/mybot
+module github.com/samirkape/awesome-go-bot
 
 go 1.16
 
