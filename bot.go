@@ -113,7 +113,7 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 
 			// Input validation: (min >= input number < max)
 			if index >= len(colls) || index < 0 {
-				ErrMsg := fmt.Sprintf("Invalid response, accepted range is {0 - %d} ", len(colls)-1)
+				ErrMsg := fmt.Sprintf("Invalid response, expected: {0 - %d}, given: %d ", len(colls)-1, index)
 				SendMessage(ErrMsg, chatID)
 				return
 			}
