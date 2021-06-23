@@ -128,8 +128,8 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 				for _, pkg := range pkgs {
 					SendMessage(pkg.packageToMsg(), chatID)
 				}
-				SendMessage(fmt.Sprintf("Sent %d packages for %s", len(pkgs), colls[index]), chatID)
 			}
+			SendMessage(fmt.Sprintf("Sent %d packages for %s", len(pkgs), colls[index]), chatID)
 		}
 	}
 
