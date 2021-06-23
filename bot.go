@@ -17,7 +17,9 @@ import (
 const _MYUSERID = 1346530914
 
 type (
-	// commands to interact with the bot
+	// Commands to interact with the bot.
+	// they need to be defined in telegram bot settings and handled in code.
+	// we get command as a message text in a post request from telegram bot.
 	botCommand struct {
 		Start          string
 		ListCategories string
@@ -25,14 +27,15 @@ type (
 		GetStats       string
 	}
 
-	// DB config
+	// Bot config
+	// need to be read from enviroment as a "TOKEN"
 	botConfig struct {
 		BotToken string
 	}
 )
 
 func init() {
-	// Get Token from env
+	// Get bot Token from env
 	BotConfig = &botConfig{
 		BotToken: os.Getenv("TOKEN"),
 	}
@@ -49,14 +52,14 @@ func init() {
 	}
 }
 
-// initialize and validate bot
+// Initialize and validate bot
 func botInit() *tgbotapi.BotAPI {
-	// check token .env fetch status
+	// Check token environment variable read status
 	if len(BotConfig.BotToken) == 0 {
 		panic("initBot: empty bot token")
 	}
 
-	// bot instance initializer
+	// Bot instance initializer
 	bot, err := tgbotapi.NewBotAPI(BotConfig.BotToken)
 	if err != nil {
 		panic(fmt.Errorf("initBot: error initializing bot: %v", err))
@@ -100,18 +103,17 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 	if len(categoryIdx) > 0 {
 		for _, e := range categoryIdx {
 
-			// Input validation: is number string
-			// String to int index conversion
+			// Index conversion from String to int
 			index, err := strconv.Atoi(e)
 			if err != nil {
-				log.Println("Unable to convert msg to integer index")
-				SendMessage("Invalid response. Please try again", chatID)
+				log.Println("handleDefaultCommand: Unable to convert msg to integer index")
+				SendMessage("Invalid response, numeric input needed", chatID)
 				return
 			}
 
 			// Input validation: (min >= input number < max)
 			if index >= len(colls) || index < 0 {
-				ErrMsg := fmt.Sprintf("Invalid response. Accepted range is {0 - %d} ", len(colls)-1)
+				ErrMsg := fmt.Sprintf("Invalid response, accepted range is {0 - %d} ", len(colls)-1)
 				SendMessage(ErrMsg, chatID)
 				return
 			}
@@ -139,14 +141,14 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 func validateMessage(msgText string) string {
 	// Input validation: Check if it is a unhandled scommand
 	if strings.HasPrefix(msgText, "/") {
-		return "Invalid command, try numeric input"
+		return "Invalid response, try numeric input"
 	}
 
 	// Input validation: Reject response if any alphabet found in the package number
 	pattern := regexp.MustCompile(`.*[a-zA-Z]+.*`)
 	msgCharIdx := pattern.FindStringIndex(msgText)
 	if msgCharIdx != nil {
-		return "Invalid response. Non numeric input"
+		return "Invalid response, non numeric input"
 	}
 	return ""
 }
@@ -162,7 +164,7 @@ func (input Package) packageToMsg() string {
 	return msgString.String()
 }
 
-// packagesToList method works on len(reciever)
+// The packagesToList method works on len(reciever)
 // and merge them together
 func (input Packages) packagesToMsg() string {
 	msg := strings.Builder{}
@@ -207,7 +209,7 @@ func requestCounterIncr(chatID int) {
 	}
 }
 
-// initialize send message data structure which includes information such as
+// Initialize send message data structure which includes information such as
 // user id, msg, parsemode, etc.
 func newMessageInit(chatID int64, text string) tgbotapi.MessageConfig {
 	return tgbotapi.MessageConfig{

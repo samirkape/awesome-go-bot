@@ -28,7 +28,7 @@ type (
 )
 
 func init() {
-	// init database related data structure
+	// Initialize database related data structures.
 	DBConfig = &dbconfig{
 		PackageDBName: "packagedb",
 		UserDBName:    "usersdb",
@@ -37,30 +37,40 @@ func init() {
 		MongoURL:      os.Getenv("ATLAS_URI"),
 	}
 
-	// get database client
+	// Get database handle ( MongoDB ).
 	DBClient = InitDbClient()
 }
 
-// init mongo db instance
 func init() {
 	RequestCounter = GetRequestCount()
 }
 
+// ListCategories returns a list of categories from database.
+// categories are stored as a collections in the database.
 func ListCategories() CategoryList {
 	c := listCollections(DBClient, DBConfig.PackageDBName)
 	return c
 }
 
+// PackageByIndex returns a n number of packages stored inside the
+// collection as a []Package. index int will be used to map
+// name from category slice returned by ListCategories() and
+// we get all the documents that belongs to the particular category
+// by using a find query with empty bson object.
 func PackageByIndex(index int, colls []string) Packages {
 	p, _ := findPackages(colls[index])
 	return p
 }
 
+// listCollections returns database collections as a string slice.
 func listCollections(client *mongo.Client, DB string) []string {
 	collections, _ := client.Database(DB).ListCollectionNames(context.TODO(), bson.D{})
 	return collections
 }
 
+// findPackages internally calls Find() on the collection name given by
+// colName. The query parameter to Find() is left empty, hence it returns all
+// the documents.
 func findPackages(colName string) ([]Package, error) {
 	// packageList will contains packages that are
 	// requested by user by providing category number
@@ -101,7 +111,8 @@ func findPackages(colName string) ([]Package, error) {
 }
 
 // InitDbClient establishes connection to mongodb cloud database for a given URI and
-// returns *mongo.Client which needs to be used for further operations on database.
+// returns *mongo.Client which needs to be used for further operations on database
+// such as finding packages.
 func InitDbClient() *mongo.Client {
 	mongoURI := GetMongoURI()
 
