@@ -1,12 +1,12 @@
 ## awesome-go-bot
 
-[demo](doc/demo.gif)
+
 
 Roadmap
 
 | Task          | Status | Comment |
 | ------------- | :----: | ------- |
-| Basic working |   ✔️    |         |
+| Basic working |   ✔️    |     [demo](doc/demo.gif)    |
 | Unit testing  |   ⏳    |         |
 | Profiling     |   ⏳    |         |
 | Go doc        |   ✔️    |         |
