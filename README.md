@@ -5,8 +5,8 @@ Roadmap
 | Task          | Status | Comment |
 | ------------- | :----: | ------- |
 | Basic working |   ✔️    |         |
-| Unit testing  |   🕑    |         |
-| Profiling     |   🕑    |         |
+| Unit testing  |   ⏳    |         |
+| Profiling     |   ⏳    |         |
 | Go doc        |   ✔️    |         |
-| Readme        |   🕑    |         |
+| Readme        |   ⏳    |         |
 
