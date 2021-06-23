@@ -1,5 +1,7 @@
 ## awesome-go-bot
 
+[](docs/demo.gif)
+
 Roadmap
 
 | Task          | Status | Comment |
