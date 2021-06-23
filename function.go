@@ -1,6 +1,7 @@
 package mybot
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log"
@@ -21,6 +22,7 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 
 	// Head package list from the databse
 	allPackages := ListCategories()
+	defer DBClient.Disconnect(context.Background())
 
 	// Handle command given in the msgText
 	// e.g /listpackages, /getStats
