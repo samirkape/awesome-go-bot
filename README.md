@@ -1,6 +1,6 @@
 ## awesome-go-bot
 
-[](doc/demo.gif)
+[demo](doc/demo.gif)
 
 Roadmap
 
