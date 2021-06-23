@@ -15,6 +15,7 @@ import (
 
 type (
 	CategoryList []string
+	Packages     []Package
 
 	// define DB config
 	dbconfig struct {

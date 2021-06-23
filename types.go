@@ -28,8 +28,6 @@ var (
 	RequestCounter int
 )
 
-type Packages []Package
-
 // If any category contains packages  more than `MaxAcceptable`
 // Merge them into a group of `MergeMessages` and send as a single message
 const (
