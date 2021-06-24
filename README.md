@@ -2,8 +2,6 @@
 
 
 
-Roadmap
-
 | Task          | Status | Comment |
 | ------------- | :----: | ------- |
 | Basic working |   ✔️    |     [demo](doc/demo.gif)    |
