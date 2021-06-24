@@ -17,7 +17,7 @@ type (
 	CategoryList []string
 	Packages     []Package
 
-	// define DB config
+	// Define DB config
 	dbconfig struct {
 		PackageDBName string
 		UserDBName    string
@@ -28,7 +28,7 @@ type (
 )
 
 func init() {
-	// Initialize database related data structures.
+	// Initialize DB config
 	DBConfig = &dbconfig{
 		PackageDBName: "packagedb",
 		UserDBName:    "usersdb",
