@@ -170,7 +170,7 @@ func (input Packages) packagesToMsg() string {
 	msg := strings.Builder{}
 	for _, pkg := range input {
 		msg.WriteString(pkg.packageToMsg())
-		msg.WriteString("--------------------------\n\n")
+		msg.WriteString("\n")
 	}
 	return msg.String()
 }
