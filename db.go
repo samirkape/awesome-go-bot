@@ -6,6 +6,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"sort"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -49,6 +50,7 @@ func init() {
 // categories are stored as a collections in the database.
 func ListCategories() CategoryList {
 	c := listCollections(DBClient, DBConfig.PackageDBName)
+	sort.Strings(c)
 	return c
 }
 
