@@ -28,7 +28,7 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 }
 
 // A responseDecoder() parses JSON response from the POST request.
-// if all goes right, then user id, message string and error value are returned.
+// if all goes right, user id, message string and error value are returned.
 func responseDecoder(w http.ResponseWriter, r *http.Request) (int, string, error) {
 	var message ReceiveMessage
 	chatID := 0
