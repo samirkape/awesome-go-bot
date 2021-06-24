@@ -1,5 +1,8 @@
 ## awesome-go-bot
 
+Link: https://t.me/go_pkg_sender_bot
+
+Interactice bot version of https://awesome-go.com
 
 
 | Task          | Status | Comment |
