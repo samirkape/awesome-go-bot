@@ -1,7 +1,6 @@
 package mybot
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"log"
@@ -22,7 +21,6 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 
 	// Head package list from the databse
 	allPackages := ListCategories()
-	defer DBClient.Disconnect(context.Background())
 
 	// Handle command given in the msgText
 	// e.g /listpackages, /getStats
@@ -30,7 +28,7 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 }
 
 // A responseDecoder() parses JSON response from the POST request.
-// if all goes right, then user id, message string and error value are returned.
+// if all goes right, user id, message string and error value are returned.
 func responseDecoder(w http.ResponseWriter, r *http.Request) (int, string, error) {
 	var message ReceiveMessage
 	chatID := 0

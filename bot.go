@@ -159,7 +159,7 @@ func (input Package) packageToMsg() string {
 	msgString.WriteString(fmt.Sprintf("*Name*: %s\n\n", input.Name))
 	msgString.WriteString(fmt.Sprintf("*URL*: %s \n\n", input.URL))
 	if input.Info != "" {
-		msgString.WriteString(fmt.Sprintf("*Description*: _%s_ \n\n", input.Info))
+		msgString.WriteString(fmt.Sprintf("*Description*: _%s_ \n", input.Info))
 	}
 	return msgString.String()
 }
@@ -170,7 +170,7 @@ func (input Packages) packagesToMsg() string {
 	msg := strings.Builder{}
 	for _, pkg := range input {
 		msg.WriteString(pkg.packageToMsg())
-		msg.WriteString("\n")
+		msg.WriteString("-----------------------\n\n")
 	}
 	return msg.String()
 }
