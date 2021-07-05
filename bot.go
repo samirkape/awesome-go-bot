@@ -197,7 +197,7 @@ func handleManyPkgs(p Packages, chatID int) {
 			end = len(p)
 		}
 		mergedMsg := Packages(p[start:end]).packagesToMsg()
-		SendMessage(mergedMsg, chatID)
+		SendInlineMessage(mergedMsg, chatID)
 	}
 }
 
@@ -229,6 +229,23 @@ func SendMessage(msg string, userid int) error {
 	// Configure msg parameters such as mode, webpreview
 	msgcfg := newMessageInit(int64(userid), msg)
 
+	// Send message to the respective userid
+	_, err := BotInstance.Send(msgcfg)
+	if err != nil {
+		return fmt.Errorf("sendmessage: message sending failed: %v", err)
+	}
+
+	return nil
+}
+
+// SendMessage will send msg string to user with userid
+func SendInlineMessage(msg string, userid int) error {
+
+	// Configure msg parameters such as mode, webpreview
+	msgcfg := newMessageInit(int64(userid), msg)
+
+	btn := tgbotapi.NewInlineKeyboardButtonData("Next 10", msg)
+	msgcfg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup([]tgbotapi.InlineKeyboardButton{btn})
 	// Send message to the respective userid
 	_, err := BotInstance.Send(msgcfg)
 	if err != nil {
