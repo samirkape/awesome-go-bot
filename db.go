@@ -136,7 +136,7 @@ func InitDbClient() *mongo.Client {
 }
 
 // update request counter
-func UpdateQueryCount(client *mongo.Client, DbName string, CollectionName string, data interface{}) *mongo.Collection {
+func UpdateQueryCount(client *mongo.Client, DbName, CollectionName string, data interface{}) *mongo.Collection {
 	//Create a handle to the respective collection in the database.
 	collection := client.Database(DbName).Collection(CollectionName)
 	//Perform InsertMany operation & validate against the error.
