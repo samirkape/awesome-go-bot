@@ -24,8 +24,14 @@ var (
 	// Command are communication interface of bot and the app
 	BotCommand *botCommand
 
+	// Incoming message details  including id and text
+	MessageDetails *botResponse
+
 	// RequestCounter serve as a counter to count the user queries
 	RequestCounter int
+
+	// Load all packages in memory from DB
+	AllData allData
 )
 
 // If any category contains packages  more than `MaxAcceptable`

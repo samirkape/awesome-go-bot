@@ -17,6 +17,11 @@ import (
 const _MYUSERID = 1346530914
 
 type (
+	botResponse struct {
+		msgText string
+		chatID  int
+	}
+
 	// Commands to interact with the bot.
 	// they need to be defined in telegram bot settings and handled in code.
 	// we get command as a message text in a post request from telegram bot.
@@ -68,7 +73,12 @@ func botInit() *tgbotapi.BotAPI {
 	return bot
 }
 
-func executeCommand(msgText string, chatID int, categories []string) {
+func executeCommand(response *botResponse, AllData allData) {
+
+	var msgText = response.msgText
+	var chatID = response.chatID
+	var categories = AllData.CategoryList
+
 	switch msgText {
 	case BotCommand.Start:
 		SendMessage("Hello, press command button to start", chatID)
@@ -84,6 +94,7 @@ func executeCommand(msgText string, chatID int, categories []string) {
 	default:
 		handleDefaultCommand(msgText, chatID, categories)
 	}
+
 }
 
 func handleDefaultCommand(msgText string, chatID int, colls []string) {
@@ -119,7 +130,7 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 			}
 
 			// Find Packages for respective category index number
-			pkgs := PackageByIndex(index, colls)
+			pkgs := LocalPackageByIndex(index, AllData.AllPackages, colls)
 
 			// If too many (>MaxAccepted) packages, merge them.
 			if len(pkgs) > MaxAcceptable {
