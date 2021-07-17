@@ -167,11 +167,7 @@ func validateMessage(msgText string) string {
 // Merge single Package struct elements into a single message string.
 func (input Package) packageToMsg() string {
 	msgString := strings.Builder{}
-	msgString.WriteString(fmt.Sprintf("*Name*: %s\n\n", input.Name))
-	msgString.WriteString(fmt.Sprintf("*URL*: %s \n\n", input.URL))
-	if input.Info != "" {
-		msgString.WriteString(fmt.Sprintf("*Description*: _%s_ \n", input.Info))
-	}
+	msgString.WriteString(fmt.Sprintf("[%s](%s): _%s_ \n", input.Name, input.URL, input.Info))
 	return msgString.String()
 }
 
@@ -181,7 +177,7 @@ func (input Packages) packagesToMsg() string {
 	msg := strings.Builder{}
 	for _, pkg := range input {
 		msg.WriteString(pkg.packageToMsg())
-		msg.WriteString("-----------------------\n\n")
+		msg.WriteString("\n")
 	}
 	return msg.String()
 }
