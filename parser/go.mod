@@ -1,4 +1,4 @@
-module github.com/samirkape/awesome-go/parser
+module github.com/samirkape/awesome-go-bot/parser
 
 go 1.15
 
