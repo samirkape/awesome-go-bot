@@ -31,7 +31,7 @@ var (
 // If any category contains packages  more than `MaxAcceptable`
 // Merge them into a group of `MergeMessages` and send as a single message
 const (
-	MaxAcceptable = 10
+	MaxAcceptable = 1
 	MergeMessages = 10
 )
 
