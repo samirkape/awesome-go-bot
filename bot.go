@@ -198,8 +198,8 @@ func handleManyPkgs(p Packages, chatID int) {
 	pidx := 0
 	mergedCount := int(math.Floor(float64(len(p))/10)) + 1
 	for pidx = 0; pidx < mergedCount; pidx++ {
-		start := pidx * MaxAcceptable
-		end := pidx*MaxAcceptable + MaxAcceptable
+		start := pidx * MergeMessages
+		end := pidx*MergeMessages + MergeMessages
 		if end > len(p) {
 			end = len(p)
 		}
