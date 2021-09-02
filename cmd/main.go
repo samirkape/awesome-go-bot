@@ -1,7 +1,11 @@
 package main
 
-import "github.com/samirkape/awesome-go-bot/parser"
+import (
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/samirkape/awesome-go-bot/parser"
+)
 
 func main() {
-	parser.Sync()
+	// Make the handler available for Remote Procedure Call by AWS Lambda
+	lambda.Start(parser.Sync)
 }
