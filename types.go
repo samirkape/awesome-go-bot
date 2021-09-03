@@ -32,6 +32,8 @@ var (
 
 	// Load all packages in memory from DB
 	AllData allData
+
+	StoreByStars Packages
 )
 
 // If any category contains packages  more than `MaxAcceptable`

@@ -122,9 +122,11 @@ func findPackages(colName string) ([]Package, error) {
 		}
 	}
 
-	// sort.Slice(packageList, func(i, j int) bool {
-	// 	return packageList[i].Stars > packageList[j].Stars
-	// })
+	sort.Slice(packageList, func(i, j int) bool {
+		return packageList[i].Stars < packageList[j].Stars
+	})
+
+	StoreByStars = append(StoreByStars, packageList...)
 
 	return packageList, nil
 }

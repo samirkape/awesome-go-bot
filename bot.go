@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -30,6 +31,7 @@ type (
 		ListCategories string
 		ListPackages   string
 		GetStats       string
+		TopN           string
 	}
 
 	// Bot config
@@ -54,6 +56,7 @@ func init() {
 		ListCategories: "/listcategories",
 		ListPackages:   "/selectentry",
 		GetStats:       "/getstats",
+		TopN:           "/topn",
 	}
 }
 
@@ -89,12 +92,35 @@ func executeCommand(response *botResponse, AllData allData) {
 		requestCounterIncr(chatID)
 	case BotCommand.ListPackages:
 		SendMessage("Reply with catergory number", chatID)
+	case BotCommand.TopN:
+		SendMessage("Reply with top #. e.g top 10", chatID)
 	case BotCommand.GetStats:
 		SendMessage(fmt.Sprintf("Total requests: %d", RequestCounter), chatID)
 	default:
 		handleDefaultCommand(msgText, chatID, categories)
 	}
 
+}
+
+func checkTopN(msgText string, chatID int) bool {
+	// Input validation: Reject response if any alphabet found in the package number
+	top := strings.ToLower(msgText)
+	if !strings.HasPrefix(top, "top") {
+		return false
+	}
+	pattern := regexp.MustCompile("[0-9]+")
+	numbers := pattern.FindAllString(msgText, -1)
+	if len(numbers) > 0 {
+		num, _ := strconv.Atoi(numbers[0])
+		sort.SliceStable(StoreByStars, func(i, j int) bool {
+			return StoreByStars[i].Stars > StoreByStars[j].Stars
+		})
+		pkgs := StoreByStars[:len(StoreByStars)-num]
+		if len(pkgs) > MaxAcceptable {
+			handleManyPkgs(pkgs, chatID)
+		}
+	}
+	return true
 }
 
 func handleDefaultCommand(msgText string, chatID int, colls []string) {
@@ -106,6 +132,10 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 	errString := validateMessage(msgText)
 	if errString != "" {
 		log.Println(errString)
+		return
+	}
+
+	if checkTopN(msgText, chatID) {
 		return
 	}
 
@@ -154,20 +184,13 @@ func validateMessage(msgText string) string {
 	if strings.HasPrefix(msgText, "/") {
 		return "Invalid response, try numeric input"
 	}
-
-	// Input validation: Reject response if any alphabet found in the package number
-	pattern := regexp.MustCompile(`.*[a-zA-Z]+.*`)
-	msgCharIdx := pattern.FindStringIndex(msgText)
-	if msgCharIdx != nil {
-		return "Invalid response, non numeric input"
-	}
 	return ""
 }
 
 // Merge single Package struct elements into a single message string.
 func (input Package) packageToMsg() string {
 	msgString := strings.Builder{}
-	msgString.WriteString(fmt.Sprintf("stars: %d\n[%s](%s)\n%s\n", input.Stars, input.Name, input.URL, input.Info))
+	msgString.WriteString(fmt.Sprintf("[%s](%s)\nStars: %d\n%s\n", input.Name, input.URL, input.Stars, input.Info))
 	return msgString.String()
 }
 
