@@ -124,6 +124,11 @@ func CheckTopN(msgText string, chatID int) bool {
 		pkgs := StoreByStars[:num]
 		if len(pkgs) > MaxAcceptable {
 			handleManyPkgs(pkgs, chatID)
+
+		} else {
+			for _, pkg := range pkgs {
+				SendMessage(pkg.packageToMsg(), chatID)
+			}
 		}
 	}
 	return true
@@ -196,7 +201,8 @@ func validateMessage(msgText string) string {
 // Merge single Package struct elements into a single message string.
 func (input Package) packageToMsg() string {
 	msgString := strings.Builder{}
-	msgString.WriteString(fmt.Sprintf("[%s](%s)\nStars: %d\n%s\n", input.Name, input.URL, input.Stars, input.Info))
+	name := strings.Title(strings.ToLower(input.Name))
+	msgString.WriteString(fmt.Sprintf("[%s](%s)\nStars: %d\n%s\n", name, input.URL, input.Stars, input.Info))
 	return msgString.String()
 }
 
