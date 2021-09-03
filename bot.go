@@ -63,7 +63,7 @@ func init() {
 // Initialize and validate bot
 func botInit() *tgbotapi.BotAPI {
 	// Check token environment variable read status
-	if len(BotConfig.BotToken) == 0 {
+	if BotConfig.BotToken == "" {
 		panic("initBot: empty bot token")
 	}
 
