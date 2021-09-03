@@ -183,9 +183,7 @@ func loadCategories() allData {
 	var AllData allData
 	CategoryList := listCategories()
 
-	var pkgs map[string][]Package
-
-	pkgs = make(map[string][]Package, len(CategoryList))
+	var pkgs map[string][]Package = make(map[string][]Package, len(CategoryList))
 
 	for _, cat := range CategoryList {
 		p, _ := findPackages(cat)
