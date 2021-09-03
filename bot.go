@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -17,6 +18,11 @@ import (
 const _MYUSERID = 1346530914
 
 type (
+	botResponse struct {
+		msgText string
+		chatID  int
+	}
+
 	// Commands to interact with the bot.
 	// they need to be defined in telegram bot settings and handled in code.
 	// we get command as a message text in a post request from telegram bot.
@@ -25,6 +31,7 @@ type (
 		ListCategories string
 		ListPackages   string
 		GetStats       string
+		TopN           string
 	}
 
 	// Bot config
@@ -49,6 +56,7 @@ func init() {
 		ListCategories: "/listcategories",
 		ListPackages:   "/selectentry",
 		GetStats:       "/getstats",
+		TopN:           "/topn",
 	}
 }
 
@@ -68,7 +76,12 @@ func botInit() *tgbotapi.BotAPI {
 	return bot
 }
 
-func executeCommand(msgText string, chatID int, categories []string) {
+func executeCommand(response *botResponse, AllData allData) {
+
+	var msgText = response.msgText
+	var chatID = response.chatID
+	var categories = AllData.CategoryList
+
 	switch msgText {
 	case BotCommand.Start:
 		SendMessage("Hello, press command button to start", chatID)
@@ -79,11 +92,46 @@ func executeCommand(msgText string, chatID int, categories []string) {
 		requestCounterIncr(chatID)
 	case BotCommand.ListPackages:
 		SendMessage("Reply with catergory number", chatID)
+	case BotCommand.TopN:
+		SendMessage("Reply with top #. e.g top 10", chatID)
 	case BotCommand.GetStats:
 		SendMessage(fmt.Sprintf("Total requests: %d", RequestCounter), chatID)
 	default:
 		handleDefaultCommand(msgText, chatID, categories)
 	}
+
+}
+
+func CheckTopN(msgText string, chatID int) bool {
+	// Input validation: Reject response if any alphabet found in the package number
+	top := strings.ToLower(msgText)
+	if !strings.HasPrefix(top, "top") {
+		return false
+	}
+	pattern := regexp.MustCompile("[0-9]+")
+	numbers := pattern.FindAllString(msgText, -1)
+	if len(numbers) > 0 {
+		num, _ := strconv.Atoi(numbers[0])
+		// Input validation: (min >= input number < max)
+		if num >= len(StoreByStars) || num < 0 {
+			ErrMsg := fmt.Sprintf("Invalid response, expected: {0 - %d}, given: %d ", len(StoreByStars)-1, num)
+			SendMessage(ErrMsg, chatID)
+			return true
+		}
+		sort.SliceStable(StoreByStars, func(i, j int) bool {
+			return StoreByStars[i].Stars > StoreByStars[j].Stars
+		})
+		pkgs := StoreByStars[:num]
+		if len(pkgs) > MaxAcceptable {
+			handleManyPkgs(pkgs, chatID)
+
+		} else {
+			for _, pkg := range pkgs {
+				SendMessage(pkg.packageToMsg(), chatID)
+			}
+		}
+	}
+	return true
 }
 
 func handleDefaultCommand(msgText string, chatID int, colls []string) {
@@ -95,6 +143,10 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 	errString := validateMessage(msgText)
 	if errString != "" {
 		log.Println(errString)
+		return
+	}
+
+	if CheckTopN(msgText, chatID) {
 		return
 	}
 
@@ -119,7 +171,7 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 			}
 
 			// Find Packages for respective category index number
-			pkgs := PackageByIndex(index, colls)
+			pkgs := LocalPackageByIndex(index, AllData.AllPackages, colls)
 
 			// If too many (>MaxAccepted) packages, merge them.
 			if len(pkgs) > MaxAcceptable {
@@ -143,24 +195,14 @@ func validateMessage(msgText string) string {
 	if strings.HasPrefix(msgText, "/") {
 		return "Invalid response, try numeric input"
 	}
-
-	// Input validation: Reject response if any alphabet found in the package number
-	pattern := regexp.MustCompile(`.*[a-zA-Z]+.*`)
-	msgCharIdx := pattern.FindStringIndex(msgText)
-	if msgCharIdx != nil {
-		return "Invalid response, non numeric input"
-	}
 	return ""
 }
 
 // Merge single Package struct elements into a single message string.
 func (input Package) packageToMsg() string {
 	msgString := strings.Builder{}
-	msgString.WriteString(fmt.Sprintf("*Name*: %s\n\n", input.Name))
-	msgString.WriteString(fmt.Sprintf("*URL*: %s \n\n", input.URL))
-	if input.Info != "" {
-		msgString.WriteString(fmt.Sprintf("*Description*: _%s_ \n", input.Info))
-	}
+	name := strings.Title(strings.ToLower(input.Name))
+	msgString.WriteString(fmt.Sprintf("[%s](%s)\nStars: %d\n%s\n", name, input.URL, input.Stars, input.Info))
 	return msgString.String()
 }
 
@@ -170,7 +212,7 @@ func (input Packages) packagesToMsg() string {
 	msg := strings.Builder{}
 	for _, pkg := range input {
 		msg.WriteString(pkg.packageToMsg())
-		msg.WriteString("-----------------------\n\n")
+		msg.WriteString("\n")
 	}
 	return msg.String()
 }
@@ -191,8 +233,8 @@ func handleManyPkgs(p Packages, chatID int) {
 	pidx := 0
 	mergedCount := int(math.Floor(float64(len(p))/10)) + 1
 	for pidx = 0; pidx < mergedCount; pidx++ {
-		start := pidx * MaxAcceptable
-		end := pidx*MaxAcceptable + MaxAcceptable
+		start := pidx * MergeMessages
+		end := pidx*MergeMessages + MergeMessages
 		if end > len(p) {
 			end = len(p)
 		}

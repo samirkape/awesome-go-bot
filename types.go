@@ -24,14 +24,22 @@ var (
 	// Command are communication interface of bot and the app
 	BotCommand *botCommand
 
+	// Incoming message details  including id and text
+	MessageDetails *botResponse
+
 	// RequestCounter serve as a counter to count the user queries
 	RequestCounter int
+
+	// Load all packages in memory from DB
+	AllData allData
+
+	StoreByStars Packages
 )
 
 // If any category contains packages  more than `MaxAcceptable`
 // Merge them into a group of `MergeMessages` and send as a single message
 const (
-	MaxAcceptable = 10
+	MaxAcceptable = 1
 	MergeMessages = 10
 )
 
@@ -104,10 +112,11 @@ type LineMeta struct {
 
 // this is final structure of parser which will also be used for inserting and querying package to and from database.
 type Package struct {
-	Name string             `bson:"name" json:"name"`
-	URL  string             `bson:"url" json:"url"`
-	Info string             `bson:"info" json:"info"`
-	ID   primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	Name  string             `bson:"name" json:"name"`
+	URL   string             `bson:"url" json:"url"`
+	Info  string             `bson:"info" json:"info"`
+	Stars int                `bson:"stars" json:"stars"`
+	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 }
 
 // DB related structs
