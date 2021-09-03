@@ -102,7 +102,7 @@ func executeCommand(response *botResponse, AllData allData) {
 
 }
 
-func checkTopN(msgText string, chatID int) bool {
+func CheckTopN(msgText string, chatID int) bool {
 	// Input validation: Reject response if any alphabet found in the package number
 	top := strings.ToLower(msgText)
 	if !strings.HasPrefix(top, "top") {
@@ -112,10 +112,16 @@ func checkTopN(msgText string, chatID int) bool {
 	numbers := pattern.FindAllString(msgText, -1)
 	if len(numbers) > 0 {
 		num, _ := strconv.Atoi(numbers[0])
+		// Input validation: (min >= input number < max)
+		if num >= len(StoreByStars) || num < 0 {
+			ErrMsg := fmt.Sprintf("Invalid response, expected: {0 - %d}, given: %d ", len(StoreByStars)-1, num)
+			SendMessage(ErrMsg, chatID)
+			return true
+		}
 		sort.SliceStable(StoreByStars, func(i, j int) bool {
 			return StoreByStars[i].Stars > StoreByStars[j].Stars
 		})
-		pkgs := StoreByStars[:len(StoreByStars)-num]
+		pkgs := StoreByStars[:num]
 		if len(pkgs) > MaxAcceptable {
 			handleManyPkgs(pkgs, chatID)
 		}
@@ -135,7 +141,7 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 		return
 	}
 
-	if checkTopN(msgText, chatID) {
+	if CheckTopN(msgText, chatID) {
 		return
 	}
 
