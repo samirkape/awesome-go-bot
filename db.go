@@ -47,7 +47,7 @@ func init() {
 	// Get database handle ( MongoDB ).
 	DBClient = InitDbClient()
 
-	AllData = LoadCategories()
+	AllData = loadCategories()
 }
 
 func init() {
@@ -56,7 +56,7 @@ func init() {
 
 // ListCategories returns a list of categories from database.
 // categories are stored as a collections in the database.
-func ListCategories() CategoryList {
+func listCategories() CategoryList {
 	c := listCollections(DBClient, DBConfig.PackageDBName)
 	sort.Strings(c)
 	return c
@@ -67,7 +67,7 @@ func ListCategories() CategoryList {
 // name from category slice returned by ListCategories() and
 // we get all the documents that belongs to the particular category
 // by using a find query with empty bson object.
-func PackageByIndex(index int, colls []string) Packages {
+func packageByIndex(index int, colls []string) Packages {
 	p, _ := findPackages(colls[index])
 	return p
 }
@@ -121,6 +121,11 @@ func findPackages(colName string) ([]Package, error) {
 			packageList = append(packageList, p)
 		}
 	}
+
+	// sort.Slice(packageList, func(i, j int) bool {
+	// 	return packageList[i].Stars > packageList[j].Stars
+	// })
+
 	return packageList, nil
 }
 
@@ -172,9 +177,9 @@ func loadPackages(colName string) ([]Package, error) {
 	return packageList, nil
 }
 
-func LoadCategories() allData {
+func loadCategories() allData {
 	var AllData allData
-	CategoryList := ListCategories()
+	CategoryList := listCategories()
 
 	var pkgs map[string][]Package
 

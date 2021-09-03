@@ -110,10 +110,11 @@ type LineMeta struct {
 
 // this is final structure of parser which will also be used for inserting and querying package to and from database.
 type Package struct {
-	Name string             `bson:"name" json:"name"`
-	URL  string             `bson:"url" json:"url"`
-	Info string             `bson:"info" json:"info"`
-	ID   primitive.ObjectID `bson:"_id" json:"id,omitempty"`
+	Name  string             `bson:"name" json:"name"`
+	URL   string             `bson:"url" json:"url"`
+	Info  string             `bson:"info" json:"info"`
+	Stars int                `bson:"stars" json:"stars"`
+	ID    primitive.ObjectID `bson:"_id" json:"id,omitempty"`
 }
 
 // DB related structs
