@@ -13,7 +13,7 @@ get a list of top Go repositories by simply sending *Top N* to telegram bot wher
 TODOs
 
 - [ ] Decouple backend from frontend.
-- [ ] Add LRU to reduce function's cold boot time.
+- [ ] Add LRU cache to reduce function's cold boot time.
 - [ ] Add inline mode to,
      - [ ] Group multiple message.
      - [ ] Fetch dev.to Golang articles corresponding to category.
