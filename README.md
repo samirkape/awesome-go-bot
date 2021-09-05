@@ -12,5 +12,8 @@ get a list of top Go repositories by simply sending *Top N* where N is a number.
 
 - [ ] Decouple backend from frontend.
 - [ ] Add LRU to reduce function's cold boot time.
-- [ ] Add inline mode and fetch dev.to articles.
+- [ ] Add inline mode to,
+     - [ ] Group multiple message.
+     - [ ] Fetch dev.to Golang articles corresponding to category.
+- [ ] 
 
