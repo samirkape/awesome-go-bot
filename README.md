@@ -2,14 +2,8 @@
 
 Link: https://t.me/go_pkg_sender_bot
 
-Interactive bot version of https://awesome-go.com
+Interactive bot version of https://awesome-go.com.
 
+Additionally, It has filter by stars feature, by which you can 
 
-| Task          | Status | Comment |
-| ------------- | :----: | ------- |
-| Basic working |   ✔️    |     [demo](doc/demo.gif)    |
-| Unit testing  |   ⏳    |         |
-| Profiling     |   ⏳    |         |
-| Go doc        |   ✔️    |         |
-| Readme        |   ⏳    |         |
-
+query top Go repositories by simply sending *Top N* where N is a number. 
