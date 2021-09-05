@@ -183,9 +183,7 @@ func loadCategories() allData {
 	var AllData allData
 	CategoryList := listCategories()
 
-	var pkgs map[string][]Package
-
-	pkgs = make(map[string][]Package, len(CategoryList))
+	var pkgs map[string][]Package = make(map[string][]Package, len(CategoryList))
 
 	for _, cat := range CategoryList {
 		p, _ := findPackages(cat)
@@ -222,7 +220,7 @@ func InitDbClient() *mongo.Client {
 }
 
 // update request counter
-func UpdateQueryCount(client *mongo.Client, DbName string, CollectionName string, data interface{}) *mongo.Collection {
+func UpdateQueryCount(client *mongo.Client, DbName, CollectionName string, data interface{}) *mongo.Collection {
 	//Create a handle to the respective collection in the database.
 	collection := client.Database(DbName).Collection(CollectionName)
 	//Perform InsertMany operation & validate against the error.
