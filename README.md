@@ -10,6 +10,8 @@ get a list of top Go repositories by simply sending *Top N* to telegram bot wher
 
 ---
 
+TODOs
+
 - [ ] Decouple backend from frontend.
 - [ ] Add LRU to reduce function's cold boot time.
 - [ ] Add inline mode to,
