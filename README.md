@@ -15,6 +15,6 @@ get a list of top Go repositories by simply sending *Top N* where N is a number.
 - [ ] Add inline mode to,
       - [ ] Group multiple message.
       - [ ] Fetch dev.to Golang articles corresponding to category.
-- [ ] 
+
  
 
