@@ -6,7 +6,7 @@ Interactive bot version of https://awesome-go.com.
 
 Additionally, It has a filter by repository stars feature by which, you can 
 
-get a list of top Go repositories by simply sending *Top N* where N is a number. 
+get a list of top Go repositories by simply sending *Top N* to telegram bot where N is a number. 
 
 ---
 
