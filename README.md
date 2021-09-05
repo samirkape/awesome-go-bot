@@ -10,7 +10,7 @@ get a list of top Go repositories by simply sending *Top N* where N is a number.
 
 ---
 
-- [ ] Decouple backend from frontend 
-- [ ] Add LRU to function's reduce cold boot timing 
-- [ ] Add inline mode and fetch dev.to
+- [ ] Decouple backend from frontend.
+- [ ] Add LRU to reduce function's cold boot time.
+- [ ] Add inline mode and fetch dev.to articles.
 
