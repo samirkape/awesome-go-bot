@@ -12,7 +12,7 @@ this way, you can get a list of top Go repositories by simply sending *Top N* to
 
 ### Updates
 
-To make sure we are up to date with the new packages and star counts, [another lamda service](https://github.com/samirkape/awesome-go-sync) is running to synchronise 
+To make sure we are up to date with the new packages and star counts, [another lamda service](https://github.com/samirkape/awesome-go-sync) is running at the interval of 15 days to synchronise 
 
 https://awesome-go.com and star counts.
 
