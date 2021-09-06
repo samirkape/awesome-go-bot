@@ -16,9 +16,8 @@ To make sure we are up to date with the new packages and star counts, [another l
 
 https://awesome-go.com and star counts.
 
----
 
-TODOs
+### TODO
 
 - [ ] Decouple backend from frontend.
 - [ ] Add LRU cache to reduce function's cold boot time.
