@@ -22,10 +22,10 @@ at the interval of 15 days to synchronise https://awesome-go.com and star counts
 ### TODO
 
 - [ ] Decouple backend from frontend.
-- [ ] Add LRU cache to reduce function's cold boot time.
+- [ ] Add LRU cache to reduce Google cloud function's cold boot time.
 - [ ] Add inline mode to,
      - [ ] Group multiple message.
-     - [ ] Fetch dev.to Golang articles corresponding to category.
+     - [ ] Fetch dev.to Golang articles corresponding to package category/tag.
 
  
 
