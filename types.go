@@ -22,7 +22,7 @@ var (
 	BotInstance *tgbotapi.BotAPI
 
 	// Command are communication interface of bot and the app
-	BotCommand *botCommand
+	BotCMD *botCommand
 
 	// Incoming message details  including id and text
 	MessageDetails *botResponse
@@ -123,3 +123,18 @@ type Package struct {
 type UserRequestCounter struct {
 	Count int `bson:"count" json:"count"`
 }
+
+var Description string = `I can send you short details about 2000+ Go packages, frameworks, and libraries that I scraped from awesome-go.com
+
+You can use this bot in your free time to learn about how things are implemented in Go.
+
+How to use?
+
+If you have already clicked on Start,
+
+1. Click /listcategories and reply with any category number. 
+   e.g. Send 0, to list all the packages for *Actual Middlewares* 
+
+2. You can also get information about top # Go repositories by replying with top N. e.g top 50
+
+You can also find command section near smiley or attachment button.`

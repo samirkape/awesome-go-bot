@@ -32,6 +32,7 @@ type (
 		ListPackages   string
 		GetStats       string
 		TopN           string
+		Description    string
 	}
 
 	// Bot config
@@ -51,12 +52,13 @@ func init() {
 	BotInstance = botInit()
 
 	// Set bot commands
-	BotCommand = &botCommand{
+	BotCMD = &botCommand{
 		Start:          "/start",
 		ListCategories: "/listcategories",
 		ListPackages:   "/selectentry",
 		GetStats:       "/getstats",
 		TopN:           "/topn",
+		Description:    "/description",
 	}
 }
 
@@ -83,19 +85,21 @@ func executeCommand(response *botResponse, AllData allData) {
 	var categories = AllData.CategoryList
 
 	switch msgText {
-	case BotCommand.Start:
+	case BotCMD.Start:
 		SendMessage("Hello, press command button to start", chatID)
-	case BotCommand.ListCategories:
+	case BotCMD.ListCategories:
 		SendMessage("Hold on", chatID)
 		SendMessage(listToMsg(categories), chatID)
 		SendMessage("Done!", chatID)
 		requestCounterIncr(chatID)
-	case BotCommand.ListPackages:
+	case BotCMD.ListPackages:
 		SendMessage("Reply with catergory number", chatID)
-	case BotCommand.TopN:
+	case BotCMD.TopN:
 		SendMessage("Reply with top #. e.g top 10", chatID)
-	case BotCommand.GetStats:
+	case BotCMD.GetStats:
 		SendMessage(fmt.Sprintf("Total requests: %d", RequestCounter), chatID)
+	case BotCMD.Description:
+		SendMessage(Description, chatID)
 	default:
 		handleDefaultCommand(msgText, chatID, categories)
 	}
