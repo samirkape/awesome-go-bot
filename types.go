@@ -133,7 +133,8 @@ How to use?
 If you have already clicked on Start,
 
 1. Click /listcategories and reply with any category number. 
-   e.g. Send 0, to list all the packages for *Actual Middlewares* 
+
+e.g. Send 0 to list all the packages for *Actual Middlewares* 
 
 2. You can also get information about top # Go repositories by replying with top N. e.g top 50
 
