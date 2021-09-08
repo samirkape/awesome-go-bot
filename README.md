@@ -19,11 +19,11 @@ To make sure we are up to date with the new packages and star counts, [another l
 once every day to synchronise https://awesome-go.com and star counts.
 
 ### Stack
-Google Cloud Function
-MongoDB
-Webhook
-Telegram Bot API
-Go1.13
+* Google Cloud Function
+* MongoDB
+* Webhook
+* Telegram Bot API
+* Go1.13
 
 ### TODO
 
