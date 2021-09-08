@@ -27,7 +27,7 @@ once every day to synchronise https://awesome-go.com and star counts.
 
 ### TODO
 
-_ [ ] Add /meta command to fetch metadata such as,
+- [ ] Add /meta command to fetch metadata such as,
      * Total package count. 
      * Last update time.
 - [ ] Decouple backend from frontend.
