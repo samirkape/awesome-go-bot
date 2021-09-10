@@ -4,7 +4,7 @@ Link: https://t.me/go_pkg_sender_bot
 
 ### Description 
 
-Interactive bot version of https://awesome-go.com\
+Interactive bot version of https://awesome-go.com.  
 Additionally, It has a feature by which you can filter Go repositories by their star\
 counts. This way, you can get a list of top Go repositories by simply sending *Top N* to telegram\
 bot where N is any number in betwen 0 to maximum number of packages (around 2100 as of now)\ 
