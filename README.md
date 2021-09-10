@@ -12,8 +12,8 @@ bot where N is any number in betwen 0 to maximum number of packages (around 2100
 
 ### Sync
 
-To make sure we are up to date with the new packages and star counts, [another lamda service](https://github.com/samirkape/awesome-go-sync) is running 
-once every day to synchronise https://awesome-go.com and star counts.
+To make sure we are up to date with the new packages and star counts, [another lamda service](https://github.com/samirkape/awesome-go-sync) \
+is running once every day to synchronise https://awesome-go.com and star counts.
 
 ### Stack
 * Google Cloud Function
