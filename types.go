@@ -127,7 +127,7 @@ type UserRequestCounter struct {
 
 var Description string = `I can send you short details about 2000+ Go packages, frameworks, and libraries that I scraped from awesome-go.com
 
-You can use this bot in your free time to learn about how things are implemented in Go.
+You can use this bot in your free time to get familiar with Go's community contribution.
 
 How to use?
 
