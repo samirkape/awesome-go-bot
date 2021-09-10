@@ -34,7 +34,7 @@ once every day to synchronise https://awesome-go.com and star counts.
 
 ### Known Bugs
 
-1. **Category:** Style guide
+1. **Category:** Style guide\
 **Kind:** Filter by star count\
 **Issue:** Github api get request is failing due to wrong URL path. This is happening\
 because every package in the style guide category is listed as a path to .md file and not\
