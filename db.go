@@ -118,6 +118,7 @@ func findPackages(colName string) ([]Package, error) {
 		if err != nil {
 			return nil, err
 		} else {
+			p.Title = colName
 			packageList = append(packageList, p)
 		}
 	}

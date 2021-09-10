@@ -32,6 +32,7 @@ type (
 		ListPackages   string
 		GetStats       string
 		TopN           string
+		Description    string
 	}
 
 	// Bot config
@@ -51,12 +52,13 @@ func init() {
 	BotInstance = botInit()
 
 	// Set bot commands
-	BotCommand = &botCommand{
+	BotCMD = &botCommand{
 		Start:          "/start",
 		ListCategories: "/listcategories",
 		ListPackages:   "/selectentry",
 		GetStats:       "/getstats",
 		TopN:           "/topn",
+		Description:    "/description",
 	}
 }
 
@@ -83,26 +85,26 @@ func executeCommand(response *botResponse, AllData allData) {
 	var categories = AllData.CategoryList
 
 	switch msgText {
-	case BotCommand.Start:
+	case BotCMD.Start:
 		SendMessage("Hello, press command button to start", chatID)
-	case BotCommand.ListCategories:
-		SendMessage("Hold on", chatID)
+	case BotCMD.ListCategories:
 		SendMessage(listToMsg(categories), chatID)
 		SendMessage("Done!", chatID)
 		requestCounterIncr(chatID)
-	case BotCommand.ListPackages:
+	case BotCMD.ListPackages:
 		SendMessage("Reply with catergory number", chatID)
-	case BotCommand.TopN:
+	case BotCMD.TopN:
 		SendMessage("Reply with top #. e.g top 10", chatID)
-	case BotCommand.GetStats:
+	case BotCMD.GetStats:
 		SendMessage(fmt.Sprintf("Total requests: %d", RequestCounter), chatID)
+	case BotCMD.Description:
+		SendMessage(Description, chatID)
 	default:
 		handleDefaultCommand(msgText, chatID, categories)
 	}
-
 }
 
-func CheckTopN(msgText string, chatID int) bool {
+func topN(msgText string, chatID int) bool {
 	// Input validation: Reject response if any alphabet found in the package number
 	top := strings.ToLower(msgText)
 	if !strings.HasPrefix(top, "top") {
@@ -123,11 +125,11 @@ func CheckTopN(msgText string, chatID int) bool {
 		})
 		pkgs := StoreByStars[:num]
 		if len(pkgs) > MaxAcceptable {
-			handleManyPkgs(pkgs, chatID)
+			handleManyPkgs(pkgs, chatID, true)
 
 		} else {
 			for _, pkg := range pkgs {
-				SendMessage(pkg.packageToMsg(), chatID)
+				SendMessage(pkg.packageToMsg(true), chatID)
 			}
 		}
 	}
@@ -146,7 +148,7 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 		return
 	}
 
-	if CheckTopN(msgText, chatID) {
+	if topN(msgText, chatID) {
 		return
 	}
 
@@ -175,10 +177,10 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 
 			// If too many (>MaxAccepted) packages, merge them.
 			if len(pkgs) > MaxAcceptable {
-				handleManyPkgs(pkgs, chatID)
+				handleManyPkgs(pkgs, chatID, false)
 			} else {
 				for _, pkg := range pkgs {
-					SendMessage(pkg.packageToMsg(), chatID)
+					SendMessage(pkg.packageToMsg(false), chatID)
 				}
 			}
 			SendMessage(fmt.Sprintf("Sent %d packages for %s", len(pkgs), colls[index]), chatID)
@@ -199,19 +201,23 @@ func validateMessage(msgText string) string {
 }
 
 // Merge single Package struct elements into a single message string.
-func (input Package) packageToMsg() string {
+func (input Package) packageToMsg(forTop bool) string {
 	msgString := strings.Builder{}
 	name := strings.Title(strings.ToLower(input.Name))
-	msgString.WriteString(fmt.Sprintf("[%s](%s)\nStars: %d\n%s\n", name, input.URL, input.Stars, input.Info))
+	if forTop {
+		msgString.WriteString(fmt.Sprintf("[%s](%s)\nStars: %d\nCategory: %s%s\n", name, input.URL, input.Stars, input.Title, input.Info))
+	} else {
+		msgString.WriteString(fmt.Sprintf("[%s](%s)\nStars: %d\n%s\n", name, input.URL, input.Stars, input.Info))
+	}
 	return msgString.String()
 }
 
 // The packagesToList method works on len(reciever)
 // and merge them together
-func (input Packages) packagesToMsg() string {
+func (input Packages) packagesToMsg(forTop bool) string {
 	msg := strings.Builder{}
 	for _, pkg := range input {
-		msg.WriteString(pkg.packageToMsg())
+		msg.WriteString(pkg.packageToMsg(forTop))
 		msg.WriteString("\n")
 	}
 	return msg.String()
@@ -229,7 +235,7 @@ func listToMsg(list []string) string {
 // If too many (>"MaxAccepted") packages, merge them
 // into "MaxAccepted" packages per message. It calls
 // packagesToList() for merging
-func handleManyPkgs(p Packages, chatID int) {
+func handleManyPkgs(p Packages, chatID int, forTop bool) {
 	pidx := 0
 	mergedCount := int(math.Floor(float64(len(p))/10)) + 1
 	for pidx = 0; pidx < mergedCount; pidx++ {
@@ -238,7 +244,7 @@ func handleManyPkgs(p Packages, chatID int) {
 		if end > len(p) {
 			end = len(p)
 		}
-		mergedMsg := Packages(p[start:end]).packagesToMsg()
+		mergedMsg := Packages(p[start:end]).packagesToMsg(forTop)
 		SendMessage(mergedMsg, chatID)
 	}
 }
