@@ -25,4 +25,4 @@ jobs:
       run: go test -v ./...
       
     - name: Deploy
-      run: gcloud functions deploy awesome-go-bot --region=asia-south1 --entry-point=HandleTelegramWebHook --memory=512 
+      run: gcloud functions deploy awesome-go-bot --region=asia-south1 --entry-point=HandleTelegramWebHook --memory=512 --project=drive-316108
