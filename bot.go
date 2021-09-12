@@ -78,12 +78,13 @@ func botInit() *tgbotapi.BotAPI {
 	return bot
 }
 
+// When user posts some message to bot, it will be parsed and received in
+// the botResponse struct that has userID to respond back and the message
+// which you can find in the switch case defined in BotCMD to proccess the user request.
 func executeCommand(response *botResponse, AllData allData) {
-
 	var msgText = response.msgText
 	var chatID = response.chatID
 	var categories = AllData.CategoryList
-
 	switch msgText {
 	case BotCMD.Start:
 		SendMessage("Hello, press command button to start", chatID)
@@ -104,6 +105,10 @@ func executeCommand(response *botResponse, AllData allData) {
 	}
 }
 
+// At the start of an instance, we load all the data
+// from MongoDB database into a struct and create another struct
+// which has packages sorted by their repository stars. When user
+// sends e.g Top 5, we send him the first 5 elements of StoreByStars struct .
 func topN(msgText string, chatID int) bool {
 	// Input validation: Reject response if any alphabet found in the package number
 	top := strings.ToLower(msgText)
@@ -115,8 +120,8 @@ func topN(msgText string, chatID int) bool {
 	if len(numbers) > 0 {
 		num, _ := strconv.Atoi(numbers[0])
 		// Input validation: (min >= input number < max)
-		if num >= len(StoreByStars) || num < 0 {
-			ErrMsg := fmt.Sprintf("Invalid response, expected: {0 - %d}, given: %d ", len(StoreByStars)-1, num)
+		if num >= MAXTOPN || num < 0 {
+			ErrMsg := fmt.Sprintf("Invalid response, N is capped to < 200, given: %d ", num)
 			SendMessage(ErrMsg, chatID)
 			return true
 		}
@@ -124,7 +129,7 @@ func topN(msgText string, chatID int) bool {
 			return StoreByStars[i].Stars > StoreByStars[j].Stars
 		})
 		pkgs := StoreByStars[:num]
-		if len(pkgs) > MaxAcceptable {
+		if len(pkgs) > MAXACCEPTABLE {
 			handleManyPkgs(pkgs, chatID, true)
 
 		} else {
@@ -136,6 +141,9 @@ func topN(msgText string, chatID int) bool {
 	return true
 }
 
+// We have set some default commands in the Bot config, such as, /listcategories.
+// But there are some commands that needs some variable msg such as N or top N.
+// ( where N is a number ). Those commands are handled here.
 func handleDefaultCommand(msgText string, chatID int, colls []string) {
 	client := GetDbClient()
 	userDBName := GetUserDbName()
@@ -176,7 +184,7 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 			pkgs := LocalPackageByIndex(index, AllData.AllPackages, colls)
 
 			// If too many (>MaxAccepted) packages, merge them.
-			if len(pkgs) > MaxAcceptable {
+			if len(pkgs) > MAXACCEPTABLE {
 				handleManyPkgs(pkgs, chatID, false)
 			} else {
 				for _, pkg := range pkgs {
@@ -239,8 +247,8 @@ func handleManyPkgs(p Packages, chatID int, forTop bool) {
 	pidx := 0
 	mergedCount := int(math.Floor(float64(len(p))/10)) + 1
 	for pidx = 0; pidx < mergedCount; pidx++ {
-		start := pidx * MergeMessages
-		end := pidx*MergeMessages + MergeMessages
+		start := pidx * MERGEN
+		end := pidx*MAXACCEPTABLE + MAXACCEPTABLE
 		if end > len(p) {
 			end = len(p)
 		}
