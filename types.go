@@ -39,8 +39,9 @@ var (
 // If any category contains packages  more than `MaxAcceptable`
 // Merge them into a group of `MergeMessages` and send as a single message
 const (
-	MaxAcceptable = 1
-	MergeMessages = 10
+	MAXACCEPTABLE = 1
+	MERGEN        = 10
+	MAXTOPN       = 200
 )
 
 // Below structs are used for parsing the incoming POST request from telegram bot.
@@ -126,17 +127,13 @@ type UserRequestCounter struct {
 }
 
 var Description string = `I can send you short details about 2000+ Go packages, frameworks, and libraries that I scraped from awesome-go.com
-
-You can use this bot in your free time to learn about how things are implemented in Go.
+You can use this bot in your free time to get familiar with the Go community contribution.
 
 How to use?
 
-If you have already clicked on Start,
-
 1. Click /listcategories and reply with any category number. 
-
 e.g. Send 0 to list all the packages for *Actual Middlewares* 
 
-2. You can also get information about top # Go repositories by replying with top N. e.g top 50
-
-You can also find command section near smiley or attachment button.`
+2. You can also get information about the top number of Go repositories by replying with top N. e.g top 50
+N is capped to 200 to stop bot from sending lots of messages at once 
+`
