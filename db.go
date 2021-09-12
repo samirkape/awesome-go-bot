@@ -180,11 +180,12 @@ func loadPackages(colName string) ([]Package, error) {
 	return packageList, nil
 }
 
+// At the start of an instance, loadCategories() pulls all the data from MongoDB instance
+// to allData so that no DB call will be happened after that.
 func loadCategories() allData {
 	var AllData allData
 	CategoryList := listCategories()
-
-	var pkgs map[string][]Package = make(map[string][]Package, len(CategoryList))
+	pkgs := make(map[string][]Package, len(CategoryList))
 
 	for _, cat := range CategoryList {
 		p, _ := findPackages(cat)
