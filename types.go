@@ -25,7 +25,7 @@ var (
 	BotCMD *botCommand
 
 	// Incoming message details  including id and text
-	MessageDetails *botResponse
+	MessageDetails *BotResponse
 
 	// RequestCounter serve as a counter to count the user queries
 	RequestCounter int

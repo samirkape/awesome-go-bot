@@ -18,9 +18,9 @@ import (
 const _MYUSERID = 1346530914
 
 type (
-	botResponse struct {
-		msgText string
-		chatID  int
+	BotResponse struct {
+		MsgText string
+		ChatID  int
 	}
 
 	// Commands to interact with the bot.
@@ -81,9 +81,9 @@ func botInit() *tgbotapi.BotAPI {
 // When user posts some message to bot, it will be parsed and received in
 // the botResponse struct that has userID to respond back and the message
 // which you can find in the switch case defined in BotCMD to proccess the user request.
-func executeCommand(response *botResponse, AllData allData) {
-	var msgText = response.msgText
-	var chatID = response.chatID
+func ExecuteCommand(response *BotResponse, AllData allData) {
+	var msgText = response.MsgText
+	var chatID = response.ChatID
 	var categories = AllData.CategoryList
 	switch msgText {
 	case BotCMD.Start:
@@ -185,8 +185,10 @@ func handleDefaultCommand(msgText string, chatID int, colls []string) {
 
 			// If too many (>MaxAccepted) packages, merge them.
 			if len(pkgs) > MAXACCEPTABLE {
+				log.Printf("len(pkgs) > MAXACCEPATBLE: %d\n", len(pkgs))
 				handleManyPkgs(pkgs, chatID, false)
 			} else {
+				log.Printf("len(pkgs): %d\n", len(pkgs))
 				for _, pkg := range pkgs {
 					SendMessage(pkg.packageToMsg(false), chatID)
 				}
@@ -248,7 +250,7 @@ func handleManyPkgs(p Packages, chatID int, forTop bool) {
 	mergedCount := int(math.Floor(float64(len(p))/10)) + 1
 	for pidx = 0; pidx < mergedCount; pidx++ {
 		start := pidx * MERGEN
-		end := pidx*MAXACCEPTABLE + MAXACCEPTABLE
+		end := pidx*MERGEN + MERGEN
 		if end > len(p) {
 			end = len(p)
 		}

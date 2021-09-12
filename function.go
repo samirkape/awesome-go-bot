@@ -24,17 +24,18 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 
 	// Handle command given in the msgText
 	// e.g /listpackages, /getStats
-	executeCommand(response, AllData)
+	ExecuteCommand(response, AllData)
 }
 
 // A responseDecoder() parses JSON response from the POST request.
 // if all goes right, user id, message string and error value are returned.
-func responseDecoder(w http.ResponseWriter, r *http.Request) (*botResponse, error) {
+func responseDecoder(w http.ResponseWriter, r *http.Request) (*BotResponse, error) {
 	var message ReceiveMessage
-	var response botResponse
+	var response BotResponse
 
 	// Parse incoming request
 	if r.Method == http.MethodPost {
+		log.Println(r.Body)
 		err := json.NewDecoder(r.Body).Decode(&message)
 		if err != nil {
 			log.Println(err)
@@ -46,8 +47,8 @@ func responseDecoder(w http.ResponseWriter, r *http.Request) (*botResponse, erro
 	// Validate chat id
 	if message.Message.Chat.ID > 0 {
 		log.Println(message.Message.Chat.ID, message.Message.Text)
-		response.chatID = message.Message.Chat.ID
-		response.msgText = message.Message.Text
+		response.ChatID = message.Message.Chat.ID
+		response.MsgText = message.Message.Text
 	} else {
 		return nil, errors.New("responseDecoder: invalid user chat id")
 	}
