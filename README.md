@@ -1,6 +1,6 @@
 ## awesome-go-bot
 
-Link: https://t.me/go_pkg_sender_bot
+Link: https://bit.ly/39IHgzw
 
 ### Description 
 
