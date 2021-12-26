@@ -12,7 +12,7 @@ bot where N is any number in betwen 0 to maximum number of packages (around 2100
 
 ### Sync
 
-To make sure we are up to date with the new packages and star counts, [another lamda service](https://github.com/samirkape/awesome-go-sync) \
+To make sure we are up to date with the new packages and star counts, [another lambda service](https://github.com/samirkape/awesome-go-sync) \
 is running once every day to synchronise https://awesome-go.com and star counts.
 
 ### Stack
@@ -27,7 +27,7 @@ is running once every day to synchronise https://awesome-go.com and star counts.
 - [ ] Search by tags
 - [x] Add /meta command to fetch metadata such as,
      * Total package count. 
-     * Last update time.
+     * Last updated time.
 - [ ] Decouple backend from frontend.
 - [ ] Add LRU cache to reduce Google cloud function's cold boot time.
 - [ ] Add inline mode to,
