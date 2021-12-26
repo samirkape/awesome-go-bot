@@ -26,7 +26,7 @@ is running once every day to synchronise https://awesome-go.com and star counts.
 
 - [ ] Search by tags
 - [x] Add /meta command to fetch metadata such as,
-     * Total package count. 
+     * Number of packages. 
      * Last updated time.
 - [ ] Decouple backend from frontend.
 - [ ] Add LRU cache to reduce Google cloud function's cold boot time.
