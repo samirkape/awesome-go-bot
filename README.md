@@ -8,7 +8,7 @@ Interactive bot version of https://awesome-go.com.
 
 Additionally, 
 
-* You can also filter the list by Github repo star counts.  
+* You can also filter the list by Github repo star count.  
 * Get list of top Go repositories by simply sending *Top N* to telegram
 bot where N is any number in betwen 0 to maximum number of packages (around 2100 as of now).
 
