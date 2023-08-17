@@ -4,6 +4,7 @@ package mybot
 
 import (
 	"context"
+	"github.com/samirkape/awesome-go-bot/internal/packages"
 	"log"
 	"os"
 	"sort"
@@ -14,29 +15,23 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type (
-	allData struct {
-		AllPackages map[string][]Package
-		Packages
-		CategoryList
-	}
+type CategoryList []string
 
-	CategoryList []string
-	Packages     []Package
+var DBConfig *dbConfig
+var DBClient *mongo.Client
 
-	// Define DB config
-	dbconfig struct {
-		PackageDBName string
-		UserDBName    string
-		UserDBColName string
-		UserDBKey     string
-		MongoURL      string
-	}
-)
+// Define DB config
+type dbConfig struct {
+	PackageDBName string
+	UserDBName    string
+	UserDBColName string
+	UserDBKey     string
+	MongoURL      string
+}
 
 func init() {
 	// Initialize DB config
-	DBConfig = &dbconfig{
+	DBConfig = &dbConfig{
 		PackageDBName: "packagedb",
 		UserDBName:    "usersdb",
 		UserDBColName: "requestctr",
@@ -47,11 +42,7 @@ func init() {
 	// Get database handle ( MongoDB ).
 	DBClient = InitDbClient()
 
-	AllData = loadCategories()
-}
-
-func init() {
-	RequestCounter = GetRequestCount()
+	AllPackages = loadCategories()
 }
 
 // ListCategories returns a list of categories from database.
@@ -62,33 +53,23 @@ func listCategories() CategoryList {
 	return c
 }
 
-// PackageByIndex returns a n number of packages stored inside the
+// LocalPackageByIndex returns a n number of packages stored inside the
 // collection as a []Package. index int will be used to map
 // name from category slice returned by ListCategories() and
 // we get all the documents that belongs to the particular category
 // by using a find query with empty bson object.
-func packageByIndex(index int, colls []string) Packages {
-	p, _ := findPackages(colls[index])
-	return p
-}
-
-// PackageByIndex returns a n number of packages stored inside the
-// collection as a []Package. index int will be used to map
-// name from category slice returned by ListCategories() and
-// we get all the documents that belongs to the particular category
-// by using a find query with empty bson object.
-func LocalPackageByIndex(index int, m map[string][]Package, colls []string) Packages {
-	p := m[colls[index]]
+func LocalPackageByIndex(index int, m map[string][]packages.Package, collection []string) []packages.Package {
+	p := m[collection[index]]
 	return p
 }
 
 // findPackages internally calls Find() on the collection name given by
 // colName. The query parameter to Find() is left empty, hence it returns all
 // the documents.
-func findPackages(colName string) ([]Package, error) {
+func findPackages(colName string) ([]packages.Package, error) {
 	// packageList will contains packages that are
 	// requested by user by providing category number
-	var packageList []Package
+	var packageList []packages.Package
 	var cur *mongo.Cursor
 	var findError error
 
@@ -113,7 +94,7 @@ func findPackages(colName string) ([]Package, error) {
 
 	//Map result to slice
 	for cur.Next(context.TODO()) {
-		p := Package{}
+		p := packages.Package{}
 		err := cur.Decode(&p)
 		if err != nil {
 			return nil, err
@@ -127,7 +108,7 @@ func findPackages(colName string) ([]Package, error) {
 		return packageList[i].Stars < packageList[j].Stars
 	})
 
-	StoreByStars = append(StoreByStars, packageList...)
+	packages.StoreByStars = append(packages.StoreByStars, packageList...)
 
 	return packageList, nil
 }
@@ -138,63 +119,21 @@ func listCollections(client *mongo.Client, DB string) []string {
 	return collections
 }
 
-// findPackages internally calls Find() on the collection name given by
-// colName. The query parameter to Find() is left empty, hence it returns all
-// the documents.
-func loadPackages(colName string) ([]Package, error) {
-	// packageList will contains packages that are
-	// requested by user by providing category number
-	var packageList []Package
-	var cur *mongo.Cursor
-	var findError error
-
-	// Get database name and client from config
-	client := GetDbClient()
-	DB := GetPackageDbName()
-
-	// Get collection handle
-	collection := client.Database(DB).Collection(colName)
-
-	// bson.D{} specifies 'all documents'
-	filter := bson.D{}
-
-	// Find  all documents in the "Collection"
-	cur, findError = collection.Find(context.TODO(), filter)
-
-	if findError != nil {
-		return nil, findError
-	}
-
-	defer cur.Close(context.TODO())
-
-	//Map result to slice
-	for cur.Next(context.TODO()) {
-		p := Package{}
-		err := cur.Decode(&p)
-		if err != nil {
-			return nil, err
-		} else {
-			packageList = append(packageList, p)
-		}
-	}
-	return packageList, nil
-}
-
 // At the start of an instance, loadCategories() pulls all the data from MongoDB instance
-// to allData so that no DB call will be happened after that.
-func loadCategories() allData {
-	var AllData allData
+// to AllPackages so that no DB call will be happened after that.
+func loadCategories() packages.AllData {
+	var AllData packages.AllData
 	CategoryList := listCategories()
-	pkgs := make(map[string][]Package, len(CategoryList))
 
-	for _, cat := range CategoryList {
-		p, _ := findPackages(cat)
-		pkgs[cat] = p
+	pkgs := make(map[string][]packages.Package, len(CategoryList))
+
+	for _, category := range CategoryList {
+		pkg, _ := findPackages(category)
+		pkgs[category] = pkg
 	}
 
 	AllData.CategoryList = CategoryList
 	AllData.AllPackages = pkgs
-
 	return AllData
 }
 
@@ -221,7 +160,7 @@ func InitDbClient() *mongo.Client {
 	return client
 }
 
-// update request counter
+// UpdateQueryCount updates request counter
 func UpdateQueryCount(client *mongo.Client, DbName, CollectionName string, data interface{}) *mongo.Collection {
 	//Create a handle to the respective collection in the database.
 	collection := client.Database(DbName).Collection(CollectionName)
@@ -272,6 +211,6 @@ func GetUserDbColName() string {
 	return DBConfig.UserDBColName
 }
 
-func GetAllData() allData {
-	return AllData
+func GetAllPackages() packages.AllData {
+	return AllPackages
 }
