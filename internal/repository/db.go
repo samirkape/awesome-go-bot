@@ -1,9 +1,10 @@
 // mparser-db is responsible for handling database related operation
 // which may include connect, write, query
-package mybot
+package repository
 
 import (
 	"context"
+	"github.com/samirkape/awesome-go-bot/internal/commands"
 	"github.com/samirkape/awesome-go-bot/internal/packages"
 	"log"
 	"os"
@@ -42,7 +43,7 @@ func init() {
 	// Get database handle ( MongoDB ).
 	DBClient = InitDbClient()
 
-	AllPackages = loadCategories()
+	commands.AllPackages = loadCategories()
 }
 
 // ListCategories returns a list of categories from database.
@@ -108,7 +109,7 @@ func findPackages(colName string) ([]packages.Package, error) {
 		return packageList[i].Stars < packageList[j].Stars
 	})
 
-	packages.StoreByStars = append(packages.StoreByStars, packageList...)
+	packages.SortedByStars = append(packages.SortedByStars, packageList...)
 
 	return packageList, nil
 }
@@ -160,37 +161,6 @@ func InitDbClient() *mongo.Client {
 	return client
 }
 
-// UpdateQueryCount updates request counter
-func UpdateQueryCount(client *mongo.Client, DbName, CollectionName string, data interface{}) *mongo.Collection {
-	//Create a handle to the respective collection in the database.
-	collection := client.Database(DbName).Collection(CollectionName)
-	//Perform InsertMany operation & validate against the error.
-	_, err := collection.ReplaceOne(context.TODO(), bson.D{}, data)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return collection
-}
-
-func GetRequestCount() int {
-	// init DS
-	var result UserRequestCounter
-	client := GetDbClient()
-	userDBName := GetUserDbName()
-	userDBColName := GetUserDbColName()
-
-	// Get user DB collection handle
-	collection := client.Database(userDBName).Collection(userDBColName)
-
-	// There is only one document in the user db. FindOne returns that
-	err := collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
-	if err != nil {
-		return -1
-	}
-
-	return result.Count
-}
-
 func GetMongoURI() string {
 	return DBConfig.MongoURL
 }
@@ -212,5 +182,36 @@ func GetUserDbColName() string {
 }
 
 func GetAllPackages() packages.AllData {
-	return AllPackages
+	return commands.AllPackages
+}
+
+// UpdateQueryCount updates request counter
+func UpdateQueryCount(client *mongo.Client, DbName, CollectionName string, data interface{}) *mongo.Collection {
+	//Create a handle to the respective collection in the database.
+	collection := client.Database(DbName).Collection(CollectionName)
+	//Perform InsertMany operation & validate against the error.
+	_, err := collection.ReplaceOne(context.TODO(), bson.D{}, data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return collection
+}
+
+func GetRequestCount() int {
+	// init DS
+	var result commands.UserRequestCounter
+	client := GetDbClient()
+	userDBName := GetUserDbName()
+	userDBColName := GetUserDbColName()
+
+	// Get user DB collection handle
+	collection := client.Database(userDBName).Collection(userDBColName)
+
+	// There is only one document in the user db. FindOne returns that
+	err := collection.FindOne(context.TODO(), bson.D{}).Decode(&result)
+	if err != nil {
+		return -1
+	}
+
+	return result.Count
 }

@@ -1,35 +1,10 @@
-package mybot
+package bot
 
 import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"os"
 )
-
-// personal user id for debugging
-const _MYUSERID = 1346530914
-
-const StartCmd = "/start"
-const ListCategoriesCmd = "/listcategories"
-const ListPackagesCmd = "/selectentry"
-const TopNCmd = "/topn"
-const DescriptionCmd = "/description"
-
-const MAXACCEPTABLE = 1
-const MERGEN = 10
-const MAXTOPN = 200
-
-var botSession *tgbotapi.BotAPI
-var config *botConfig
-
-type BotResponse struct {
-	Command string
-	ChatID  int
-}
-
-type botConfig struct {
-	BotToken string
-}
 
 func init() {
 	// Get bot Token from env
@@ -56,7 +31,6 @@ func newBot() *tgbotapi.BotAPI {
 	if err != nil {
 		panic(fmt.Errorf("initBot: error initializing bot: %v", err))
 	}
-
 	return bot
 }
 

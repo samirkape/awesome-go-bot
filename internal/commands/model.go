@@ -1,5 +1,5 @@
 // types is a part of mparser, responsible for maintaining types, variables and constants
-package mybot
+package commands
 
 import "github.com/samirkape/awesome-go-bot/internal/packages"
 
