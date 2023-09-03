@@ -1,6 +1,9 @@
 package awesome_go_bot
 
 import (
+	"awesome-go-bot-refactored/gopackage"
+	"awesome-go-bot-refactored/gopackage/mongodb"
+	"awesome-go-bot-refactored/gopackage/search"
 	"awesome-go-bot-refactored/internal/logger"
 	"awesome-go-bot-refactored/service/chat"
 	"awesome-go-bot-refactored/service/chat/inline"
@@ -13,6 +16,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var queryError = errors.New("unable to handle query")
@@ -31,18 +35,51 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 }
 
 func ExecuteCommand(ctx context.Context, chat chat.Info) error {
+	var botService *tgbotapi.BotAPI // TODO create botService
+	client := mongodb.GetClient()
+	packages, err := client.GetAllPackages()
+	if err != nil {
+		return err
+	}
+	searchService := search.NewSearchService(packages)
 	if chat.IsInline() {
-		handleInlineQuery(ctx, chat)
+		handleInlineQuery(botService, searchService, chat)
 		fmt.Println("inline query")
 	} else {
 		fmt.Println("regular query")
 	}
-
 	return nil
 }
 
-func handleInlineQuery(ctx context.Context, info chat.Info) {
+func handleInlineQuery(botService *tgbotapi.BotAPI, service search.Service, chat chat.Info) {
+	var results []interface{}
+	packages := service.Search(chat.GetQuery())
 
+	results = createInlineQueryArticle(packages, results)
+
+	inlineConf := tgbotapi.InlineConfig{
+		InlineQueryID: chat.GetQueryId(),
+		IsPersonal:    true,
+		CacheTime:     0,
+		Results:       results,
+	}
+
+	if _, err := botService.Request(inlineConf); err != nil {
+		log.Println(err)
+	}
+}
+
+func createInlineQueryArticle(packages []gopackage.Package, results []interface{}) []interface{} {
+	for i, _ := range packages {
+		article := tgbotapi.NewInlineQueryResultArticle(
+			strconv.Itoa(i),
+			packages[i].Name,
+			packages[i].Name,
+		)
+		article.Description = "stars: " + strconv.Itoa(packages[i].Stars) + "\n" + packages[i].Info
+		results = append(results, article)
+	}
+	return results
 }
 
 func parseRequest(body io.ReadCloser) (*tgbotapi.Update, error) {

@@ -12,9 +12,9 @@ type inlineChat struct {
 func NewInlineChat(update *tgbotapi.Update) chat.Info {
 	return &inlineChat{
 		Info: &chat.Chat{
-			ChatId: update.InlineQuery.From.ID,
-			Query:  update.InlineQuery.Query,
-			Inline: true,
+			QueryId: update.InlineQuery.ID,
+			Query:   update.InlineQuery.Query,
+			Inline:  true,
 		},
 	}
 }
