@@ -4,7 +4,7 @@ import (
 	"awesome-go-bot-refactored/internal/logger"
 	"awesome-go-bot-refactored/service/chat"
 	"awesome-go-bot-refactored/service/chat/inline"
-	"awesome-go-bot-refactored/service/chat/poll"
+	"awesome-go-bot-refactored/service/chat/regular"
 	"context"
 	"encoding/json"
 	"errors"
@@ -32,10 +32,17 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 
 func ExecuteCommand(ctx context.Context, chat chat.Info) error {
 	if chat.IsInline() {
+		handleInlineQuery(ctx, chat)
 		fmt.Println("inline query")
+	} else {
+		fmt.Println("regular query")
 	}
 
 	return nil
+}
+
+func handleInlineQuery(ctx context.Context, info chat.Info) {
+
 }
 
 func parseRequest(body io.ReadCloser) (*tgbotapi.Update, error) {
@@ -52,6 +59,6 @@ func getChat(ctx context.Context, request *tgbotapi.Update) chat.Info {
 	if request.InlineQuery != nil {
 		return inline.NewInlineChat(request)
 	} else {
-		return poll.NewPollingChat(request)
+		return regular.NewRegularChat(request)
 	}
 }
