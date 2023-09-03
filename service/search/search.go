@@ -2,10 +2,10 @@ package search
 
 import "awesome-go-bot-refactored/gopackage"
 
-type Interface interface {
-	Search(query string) ([]gopackage.Package, error)
+type Service interface {
+	Search(query string) []gopackage.Package
 }
 
-type Search struct {
-	provider gopackage.DbProvider
+func Packages(service Service, query string) []gopackage.Package {
+	return service.Search(query)
 }
