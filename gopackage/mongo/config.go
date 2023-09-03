@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-const tableName = "packagedb"
+const TABLENAME = "packagedb"
 
 type config struct {
 	PackageTableName string
@@ -18,7 +18,7 @@ func newDefaultConfig() *config {
 		log.Fatal("MONGO_URL environment variable is not set")
 	}
 	return &config{
-		PackageTableName: tableName,
+		PackageTableName: TABLENAME,
 		MongoURL:         URL,
 	}
 }

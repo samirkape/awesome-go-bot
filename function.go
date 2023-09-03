@@ -1,10 +1,10 @@
 package awesome_go_bot
 
 import (
+	"awesome-go-bot-refactored/internal/logger"
 	"awesome-go-bot-refactored/service/chat"
 	"awesome-go-bot-refactored/service/chat/inline"
 	"awesome-go-bot-refactored/service/chat/poll"
-	"awesome-go-bot-refactored/service/logger"
 	"context"
 	"encoding/json"
 	"errors"
