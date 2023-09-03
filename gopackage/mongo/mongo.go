@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
+	"sort"
 )
 
 type Client struct {
@@ -32,7 +33,7 @@ func GetClient() *Client {
 	return &Client{client: client}
 }
 
-func (m *Client) GetAllPackages() (map[gopackage.CategoryName][]gopackage.Package, error) {
+func (m *Client) GetAllPackages() (gopackage.AllPackages, error) {
 	collections := m.listCollections(TABLENAME)
 	packages := make(map[gopackage.CategoryName][]gopackage.Package)
 	for _, collectionName := range collections {
@@ -40,6 +41,10 @@ func (m *Client) GetAllPackages() (map[gopackage.CategoryName][]gopackage.Packag
 		if err != nil {
 			return nil, err
 		}
+		// sort before adding to map
+		sort.Slice(p, func(i, j int) bool {
+			return p[i].Stars > p[j].Stars
+		})
 		packages[gopackage.CategoryName(collectionName)] = p
 	}
 	return packages, nil
