@@ -1,12 +1,13 @@
 package inline
 
 import (
-	"awesome-go-bot-refactored/gopackage"
-	"awesome-go-bot-refactored/gopackage/search"
-	"awesome-go-bot-refactored/internal/service/chat"
+	"awesome-go-bot/gopackage"
+	"awesome-go-bot/gopackage/search"
+	"awesome-go-bot/internal/service/chat"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 	"strconv"
+	"strings"
 )
 
 type inlineChat struct {
@@ -14,10 +15,11 @@ type inlineChat struct {
 }
 
 func NewInlineChat(update *tgbotapi.Update) chat.Info {
+	query := strings.TrimSpace(update.InlineQuery.Query)
 	return &inlineChat{
 		Info: &chat.Chat{
 			QueryId: update.InlineQuery.ID,
-			Query:   update.InlineQuery.Query,
+			Query:   query,
 			Inline:  true,
 		},
 	}

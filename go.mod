@@ -1,4 +1,4 @@
-module awesome-go-bot-refactored
+module awesome-go-bot
 
 go 1.21
 

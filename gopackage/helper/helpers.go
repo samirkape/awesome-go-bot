@@ -1,8 +1,10 @@
 package helper
 
 import (
-	"awesome-go-bot-refactored/gopackage"
+	"awesome-go-bot/gopackage"
 	"fmt"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"strings"
 )
 
@@ -13,4 +15,43 @@ func ListToMessage(list []gopackage.CategoryName) string {
 		msg.WriteString(fmt.Sprintf("%d. %s\n", i, pkg))
 	}
 	return msg.String()
+}
+
+func BuildStringMessageBatch(packages []gopackage.Package, forTop bool) []string {
+	const batchSize = 10
+	var batch []string
+	for start := 0; start < len(packages); start += batchSize {
+		end := start + batchSize
+		if end > len(packages) {
+			end = len(packages)
+		}
+		mergedMsg := packagesToMsg(packages[start:end], forTop)
+		batch = append(batch, mergedMsg)
+	}
+	return batch
+}
+
+func packagesToMsg(packages []gopackage.Package, forTop bool) string {
+	var msg strings.Builder
+
+	for _, pkg := range packages {
+		msg.WriteString(packageToMsg(pkg, forTop))
+		msg.WriteString("\n\n")
+	}
+
+	return msg.String()
+}
+
+func packageToMsg(pkg gopackage.Package, forTopN bool) string {
+	var category string
+	name := cases.Title(language.AmericanEnglish).String(pkg.Name)
+	stars := fmt.Sprintf("Stars: %d\n", pkg.Stars)
+	url := fmt.Sprintf("[%s](%s)\n", name, pkg.URL)
+	info := pkg.Info
+
+	if forTopN {
+		category = fmt.Sprintf("Category: %s\n", pkg.Category)
+	}
+
+	return fmt.Sprintf("%s%s%s%s", url, stars, category, info)
 }

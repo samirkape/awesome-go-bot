@@ -1,9 +1,9 @@
 package factory
 
 import (
-	"awesome-go-bot-refactored/internal/service/chat"
-	"awesome-go-bot-refactored/internal/service/chat/inline"
-	"awesome-go-bot-refactored/internal/service/chat/regular"
+	"awesome-go-bot/internal/service/chat"
+	"awesome-go-bot/internal/service/chat/inline"
+	"awesome-go-bot/internal/service/chat/regular"
 	"context"
 	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )

@@ -1,8 +1,8 @@
 package search
 
 import (
-	"awesome-go-bot-refactored/gopackage"
-	searchtrie "awesome-go-bot-refactored/gopackage/search/trie"
+	"awesome-go-bot/gopackage"
+	searchtrie "awesome-go-bot/gopackage/search/trie"
 )
 
 type Service interface {

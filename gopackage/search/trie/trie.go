@@ -1,8 +1,10 @@
 package searchtrie
 
 import (
-	"awesome-go-bot-refactored/gopackage"
+	"awesome-go-bot/gopackage"
 	"github.com/shivamMg/trie"
+	"slices"
+	"sort"
 	"strings"
 	"sync"
 )
@@ -12,6 +14,9 @@ type Search struct {
 }
 
 func (s Search) Search(query string) []gopackage.Package {
+	if query == "" {
+		return nil
+	}
 	index := buildPackageIndex(s.AllPackages)
 	query = strings.ToLower(query)
 	results := searchTrie(index, query, false)
@@ -78,7 +83,7 @@ func insertPackageInfo(t *trie.Trie, pkgInfoStrings []string, pkg gopackage.Pack
 		indexed := pkgInfoStrings[index:]
 		t.Put(indexed, pkg)
 		for _, word := range indexed {
-			for i := len(word); i > 0; i-- {
+			for i := 1; i <= len(word); i++ {
 				indexedChars := word[:i]
 				t.Put([]string{indexedChars}, pkg)
 			}
@@ -105,7 +110,18 @@ func buildPackagesFromSearchResults(a gopackage.AllPackages, results *trie.Searc
 			packages = append(packages, a.GetPackagesByCategoryNumber(categoryNumber)...)
 			return packages
 		}
-		packages = append(packages, result.Value.(gopackage.Package))
+		pkg := result.Value.(gopackage.Package)
+		pkg.Name = strings.ToLower(pkg.Name)
+		packages = append(packages, pkg)
 	}
+	packages = sortByStarsAndCleanup(packages)
+	return packages
+}
+
+func sortByStarsAndCleanup(packages []gopackage.Package) []gopackage.Package {
+	sort.Slice(packages, func(i, j int) bool {
+		return packages[i].Stars > packages[j].Stars
+	})
+	packages = slices.Compact(packages)
 	return packages
 }

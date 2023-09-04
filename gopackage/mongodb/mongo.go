@@ -1,7 +1,7 @@
 package mongodb
 
 import (
-	"awesome-go-bot-refactored/gopackage"
+	"awesome-go-bot/gopackage"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -52,7 +52,7 @@ func (m *Client) listCollections(databaseName string) (collections []string) {
 	database := m.client.Database(databaseName)
 
 	// List the collections
-	collections, err := database.ListCollectionNames(context.Background(), nil)
+	collections, err := database.ListCollectionNames(context.Background(), bson.D{})
 	if err != nil {
 		log.Fatal(err)
 	}

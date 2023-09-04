@@ -4,8 +4,8 @@
 package gobot
 
 import (
-	"awesome-go-bot-refactored/internal/service/chat"
-	"awesome-go-bot-refactored/internal/service/gobot/config"
+	"awesome-go-bot/internal/service/chat"
+	"awesome-go-bot/internal/service/gobot/config"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )

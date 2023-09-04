@@ -1,13 +1,14 @@
 package regular
 
 import (
-	"awesome-go-bot-refactored/gopackage"
-	"awesome-go-bot-refactored/gopackage/helper"
-	"awesome-go-bot-refactored/internal/service/chat"
-	"awesome-go-bot-refactored/internal/service/gobot"
-	"awesome-go-bot-refactored/internal/service/gobot/commands"
-	"awesome-go-bot-refactored/internal/service/gobot/constant"
+	"awesome-go-bot/gopackage"
+	"awesome-go-bot/gopackage/helper"
+	"awesome-go-bot/internal/service/chat"
+	"awesome-go-bot/internal/service/gobot"
+	"awesome-go-bot/internal/service/gobot/commands"
+	"awesome-go-bot/internal/service/gobot/constant"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"strings"
 )
 
 type regular struct {
@@ -15,10 +16,11 @@ type regular struct {
 }
 
 func NewRegularChat(update *tgbotapi.Update) chat.Info {
+	query := strings.TrimSpace(update.Message.Text)
 	return &regular{
 		Info: &chat.Chat{
 			ChatId: update.Message.Chat.ID,
-			Query:  update.Message.Text,
+			Query:  query,
 			Inline: false,
 		},
 	}
@@ -41,6 +43,15 @@ func HandleQuery(botService *tgbotapi.BotAPI, packageService gopackage.AllPackag
 		err := gobot.Respond(chat, botService, helper.ListToMessage(packageService.GetCategories()))
 		if err != nil {
 			return err
+		}
+	case command.IsTopN(chat.GetQuery()):
+		topN := packageService.GetTopPackagesSortedByStars(chat.GetQuery())
+		messages := helper.BuildStringMessageBatch(topN, true)
+		for _, msg := range messages {
+			err := gobot.Respond(chat, botService, msg)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil

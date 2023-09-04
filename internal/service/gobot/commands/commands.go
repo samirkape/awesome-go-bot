@@ -1,5 +1,7 @@
 package commands
 
+import "strings"
+
 type Commands struct {
 	Start          string
 	ListCategories string
@@ -11,9 +13,9 @@ type Commands struct {
 func New() *Commands {
 	return &Commands{
 		Start:          "/start",
-		ListCategories: "/list-categories",
-		GetPackages:    "/select-category",
-		TopN:           "/top-n",
+		ListCategories: "/list_categories",
+		GetPackages:    "/select_category",
+		TopN:           "/top",
 		Description:    "/description",
 	}
 }
@@ -30,8 +32,11 @@ func (c *Commands) GetGetPackages() string {
 	return c.GetPackages
 }
 
-func (c *Commands) GetTopN() string {
-	return c.TopN
+func (c *Commands) IsTopN(query string) string {
+	if strings.HasPrefix(query, c.TopN) {
+		return query
+	}
+	return ""
 }
 
 func (c *Commands) GetDescription() string {
