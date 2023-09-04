@@ -7,26 +7,33 @@ import (
 
 const TABLENAME = "packagedb"
 
-type config struct {
+type Config struct {
 	PackageTableName string
 	MongoURL         string
 }
 
-func newDefaultConfig() *config {
-	URL, found := os.LookupEnv("MONGO_URL")
+func NewConfig(tableName, URL string) *Config {
+	return &Config{
+		PackageTableName: tableName,
+		MongoURL:         URL,
+	}
+}
+
+func NewDefaultConfig() *Config {
+	URL, found := os.LookupEnv("ATLAS_URI")
 	if !found {
 		log.Fatal("MONGO_URL environment variable is not set")
 	}
-	return &config{
+	return &Config{
 		PackageTableName: TABLENAME,
 		MongoURL:         URL,
 	}
 }
 
-func (c *config) GetPackageTableName() string {
+func (c *Config) GetPackageTableName() string {
 	return c.PackageTableName
 }
 
-func (c *config) GetURL() string {
+func (c *Config) GetURL() string {
 	return c.MongoURL
 }

@@ -1,0 +1,17 @@
+package factory
+
+import (
+	"awesome-go-bot-refactored/internal/service/chat"
+	"awesome-go-bot-refactored/internal/service/chat/inline"
+	"awesome-go-bot-refactored/internal/service/chat/regular"
+	"context"
+	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
+
+func New(ctx context.Context, request *tgbotapi.Update) chat.Info {
+	if request.InlineQuery != nil {
+		return inline.NewInlineChat(request)
+	} else {
+		return regular.NewRegularChat(request)
+	}
+}

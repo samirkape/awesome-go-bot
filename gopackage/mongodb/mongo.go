@@ -14,23 +14,21 @@ type Client struct {
 	client *mongo.Client
 }
 
-func GetClient() *Client {
-	config := newDefaultConfig()
-
-	// Get database handle
+func New(config *Config) (*Client, error) {
+	// get database handle
 	clientOptions := options.Client().ApplyURI(config.GetURL())
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	// Check the connection
+	// check the connection
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return &Client{client: client}
+	return &Client{client: client}, nil
 }
 
 func (m *Client) GetAllPackages() (gopackage.AllPackages, error) {
@@ -75,7 +73,6 @@ func (m *Client) getPackagesByCollectionName(databaseName string, collectionName
 		return nil, err
 	}
 	defer func(cur *mongo.Cursor, ctx context.Context) {
-
 		err := cur.Close(ctx)
 		if err != nil {
 			log.Fatal(err)

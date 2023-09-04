@@ -9,6 +9,6 @@ type Service interface {
 	Search(string) []gopackage.Package
 }
 
-func NewSearchService(a gopackage.AllPackages) Service {
-	return searchtrie.Search{a}
+func NewService(a gopackage.AllPackages) Service {
+	return searchtrie.Search{AllPackages: a}
 }

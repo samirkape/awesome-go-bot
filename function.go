@@ -1,22 +1,22 @@
 package awesome_go_bot
 
 import (
-	"awesome-go-bot-refactored/gopackage"
 	"awesome-go-bot-refactored/gopackage/mongodb"
 	"awesome-go-bot-refactored/gopackage/search"
 	"awesome-go-bot-refactored/internal/logger"
-	"awesome-go-bot-refactored/service/chat"
-	"awesome-go-bot-refactored/service/chat/inline"
-	"awesome-go-bot-refactored/service/chat/regular"
+	"awesome-go-bot-refactored/internal/service/chat"
+	"awesome-go-bot-refactored/internal/service/chat/factory"
+	"awesome-go-bot-refactored/internal/service/chat/inline"
+	"awesome-go-bot-refactored/internal/service/chat/regular"
+	"awesome-go-bot-refactored/internal/service/gobot"
+	"awesome-go-bot-refactored/internal/service/gobot/config"
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 var queryError = errors.New("unable to handle query")
@@ -27,59 +27,45 @@ func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal("parsing error")
 	}
-	chat := getChat(ctx, request)
-	err = ExecuteCommand(ctx, chat)
+	chatInfo := factory.New(ctx, request)
+	err = ExecuteCommand(ctx, chatInfo)
 	if err != nil {
 		logger.FieldLogger("failed for chatId: ", request.Message.Chat.ID).Error(err)
 	}
 }
 
 func ExecuteCommand(ctx context.Context, chat chat.Info) error {
-	var botService *tgbotapi.BotAPI // TODO create botService
-	client := mongodb.GetClient()
-	packages, err := client.GetAllPackages()
+	// create new bot
+	botService, err := gobot.New(config.NewDefaultConfig())
 	if err != nil {
 		return err
 	}
-	searchService := search.NewSearchService(packages)
+	// create new mongodb client
+	client, err := mongodb.New(mongodb.NewDefaultConfig())
+	if err != nil {
+		return err
+	}
+	// get all packageService from the database
+	packageService, err := client.GetAllPackages()
+	if err != nil {
+		return err
+	}
+	// create new search service
+	searchService := search.NewService(packageService)
+
+	// handle query
 	if chat.IsInline() {
-		handleInlineQuery(botService, searchService, chat)
-		fmt.Println("inline query")
+		err := inline.HandleQuery(botService, searchService, chat)
+		if err != nil {
+			return err
+		}
 	} else {
-		fmt.Println("regular query")
+		err := regular.HandleQuery(botService, packageService, chat)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
-}
-
-func handleInlineQuery(botService *tgbotapi.BotAPI, service search.Service, chat chat.Info) {
-	var results []interface{}
-	packages := service.Search(chat.GetQuery())
-
-	results = createInlineQueryArticle(packages, results)
-
-	inlineConf := tgbotapi.InlineConfig{
-		InlineQueryID: chat.GetQueryId(),
-		IsPersonal:    true,
-		CacheTime:     0,
-		Results:       results,
-	}
-
-	if _, err := botService.Request(inlineConf); err != nil {
-		log.Println(err)
-	}
-}
-
-func createInlineQueryArticle(packages []gopackage.Package, results []interface{}) []interface{} {
-	for i, _ := range packages {
-		article := tgbotapi.NewInlineQueryResultArticle(
-			strconv.Itoa(i),
-			packages[i].Name,
-			packages[i].Name,
-		)
-		article.Description = "stars: " + strconv.Itoa(packages[i].Stars) + "\n" + packages[i].Info
-		results = append(results, article)
-	}
-	return results
 }
 
 func parseRequest(body io.ReadCloser) (*tgbotapi.Update, error) {
@@ -90,12 +76,4 @@ func parseRequest(body io.ReadCloser) (*tgbotapi.Update, error) {
 		return nil, err
 	}
 	return update, nil
-}
-
-func getChat(ctx context.Context, request *tgbotapi.Update) chat.Info {
-	if request.InlineQuery != nil {
-		return inline.NewInlineChat(request)
-	} else {
-		return regular.NewRegularChat(request)
-	}
 }
