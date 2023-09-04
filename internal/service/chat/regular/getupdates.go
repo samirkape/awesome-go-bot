@@ -47,11 +47,22 @@ func HandleQuery(botService *tgbotapi.BotAPI, packageService gopackage.AllPackag
 	case command.IsTopN(chat.GetQuery()):
 		topN := packageService.GetTopPackagesSortedByStars(chat.GetQuery())
 		messages := helper.BuildStringMessageBatch(topN, true)
-		for _, msg := range messages {
-			err := gobot.Respond(chat, botService, msg)
-			if err != nil {
-				return err
-			}
+		err := gobot.RespondToMessages(chat, botService, messages)
+		if err != nil {
+			return err
+		}
+	case command.IsCategoryNumber(chat.GetQuery()):
+		packages := packageService.GetPackagesByCategoryNumber(chat.GetQuery())
+		messages := helper.BuildStringMessageBatch(packages, false)
+		err := gobot.RespondToMessages(chat, botService, messages)
+		if err != nil {
+			return err
+		}
+	default:
+		pkg := packageService.GetPackageByName(chat.GetQuery())
+		err := gobot.Respond(chat, botService, helper.PackageToMsg(pkg, true))
+		if err != nil {
+			return err
 		}
 	}
 	return nil

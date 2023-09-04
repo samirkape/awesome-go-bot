@@ -5,6 +5,7 @@ import (
 	"github.com/shivamMg/trie"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -56,7 +57,8 @@ func getPkgInfoStrings(pkg gopackage.Package) []string {
 	var pkgInfoStrings []string
 
 	// Add package name to the slice
-	pkgInfoStrings = append(pkgInfoStrings, pkg.Name)
+	nameInParts := strings.Split(pkg.Name, "")
+	pkgInfoStrings = append(pkgInfoStrings, nameInParts...)
 
 	// Split the package category and add its parts to the slice
 	categoryParts := strings.Split(pkg.Category, " ")
@@ -93,7 +95,7 @@ func insertPackageInfo(t *trie.Trie, pkgInfoStrings []string, pkg gopackage.Pack
 
 func searchTrie(index *trie.Trie, query string, exact bool) *trie.SearchResults {
 	var results *trie.SearchResults
-	querySlice := strings.Split(query, " ")
+	querySlice := strings.Split(query, "")
 	if exact {
 		results = index.Search(querySlice, trie.WithMaxResults(1))
 	} else {
@@ -107,7 +109,7 @@ func buildPackagesFromSearchResults(a gopackage.AllPackages, results *trie.Searc
 	for _, result := range results.Results {
 		categoryNumber, isCategory := result.Value.(int)
 		if isCategory {
-			packages = append(packages, a.GetPackagesByCategoryNumber(categoryNumber)...)
+			packages = append(packages, a.GetPackagesByCategoryNumber(strconv.Itoa(categoryNumber))...)
 			return packages
 		}
 		pkg := result.Value.(gopackage.Package)

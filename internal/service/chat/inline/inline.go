@@ -51,7 +51,7 @@ func createInlineQueryArticle(packages []gopackage.Package, results []interface{
 			packages[i].Name,
 			packages[i].Name,
 		)
-		article.Description = "stars: " + strconv.Itoa(packages[i].Stars) + "\n" + packages[i].Info
+		article.Description = "Stars: " + strconv.Itoa(packages[i].Stars) + "\n" + packages[i].Info
 		results = append(results, article)
 	}
 	return results

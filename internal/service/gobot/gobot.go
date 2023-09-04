@@ -8,6 +8,7 @@ import (
 	"awesome-go-bot/internal/service/gobot/config"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/sirupsen/logrus"
 )
 
 func New(config *config.Config) (*tgbotapi.BotAPI, error) {
@@ -25,6 +26,18 @@ func Respond(chat chat.Info, bot *tgbotapi.BotAPI, messageText string) error {
 	_, err := bot.Send(messageConfig)
 	if err != nil {
 		return fmt.Errorf("message sending failed: %v", err)
+	}
+	return nil
+}
+
+// RespondToMessages will send msg string to user with userid
+func RespondToMessages(chat chat.Info, bot *tgbotapi.BotAPI, messages []string) error {
+	for _, msg := range messages {
+		err := Respond(chat, bot, msg)
+		if err != nil {
+			logrus.Error("message sending failed: %v", err)
+			continue
+		}
 	}
 	return nil
 }

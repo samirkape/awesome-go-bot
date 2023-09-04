@@ -2,10 +2,12 @@ package gopackage
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"regexp"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 type CategoryName string
@@ -39,8 +41,30 @@ func (a AllPackages) GetPackagesByCategory(category CategoryName) []Package {
 	return a[category]
 }
 
-func (a AllPackages) GetPackagesByCategoryNumber(categoryNumber int) []Package {
-	return a[a.GetCategories()[categoryNumber]]
+// TODO optimize this
+func (a AllPackages) GetPackageByName(name string) Package {
+	for _, v := range a {
+		for _, pkg := range v {
+			if strings.ToLower(pkg.Name) == name {
+				return pkg
+			}
+		}
+	}
+	return Package{}
+}
+
+func (a AllPackages) GetPackagesByCategoryNumber(query string) []Package {
+	categoryNumber, err := strconv.Atoi(query)
+	if err != nil {
+		logrus.Error(err)
+		return nil
+	}
+	// sort categories
+	packages := a[a.GetCategories()[categoryNumber]]
+	sort.Slice(packages, func(i, j int) bool {
+		return packages[i].Stars < packages[j].Stars
+	})
+	return packages
 }
 
 // TODO optimize this

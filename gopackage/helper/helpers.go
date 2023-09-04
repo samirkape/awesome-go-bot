@@ -12,7 +12,9 @@ import (
 func ListToMessage(list []gopackage.CategoryName) string {
 	var msg strings.Builder
 	for i, pkg := range list {
-		msg.WriteString(fmt.Sprintf("%d. %s\n", i, pkg))
+		index := i + 1
+		markdown := fmt.Sprintf("[%d. %s](%d)\n", index, pkg, index)
+		msg.WriteString(markdown)
 	}
 	return msg.String()
 }
@@ -33,16 +35,14 @@ func BuildStringMessageBatch(packages []gopackage.Package, forTop bool) []string
 
 func packagesToMsg(packages []gopackage.Package, forTop bool) string {
 	var msg strings.Builder
-
 	for _, pkg := range packages {
-		msg.WriteString(packageToMsg(pkg, forTop))
+		msg.WriteString(PackageToMsg(pkg, forTop))
 		msg.WriteString("\n\n")
 	}
-
 	return msg.String()
 }
 
-func packageToMsg(pkg gopackage.Package, forTopN bool) string {
+func PackageToMsg(pkg gopackage.Package, forTopN bool) string {
 	var category string
 	name := cases.Title(language.AmericanEnglish).String(pkg.Name)
 	stars := fmt.Sprintf("Stars: %d\n", pkg.Stars)

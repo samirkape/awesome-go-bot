@@ -1,6 +1,9 @@
 package commands
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 type Commands struct {
 	Start          string
@@ -37,6 +40,14 @@ func (c *Commands) IsTopN(query string) string {
 		return query
 	}
 	return ""
+}
+
+func (c *Commands) IsCategoryNumber(query string) string {
+	_, err := strconv.Atoi(query)
+	if err != nil {
+		return ""
+	}
+	return query
 }
 
 func (c *Commands) GetDescription() string {
