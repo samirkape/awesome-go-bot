@@ -62,7 +62,7 @@ func (a AllPackages) GetPackagesByCategoryNumber(query string) []Package {
 	// sort categories
 	packages := a[a.GetCategories()[categoryNumber]]
 	sort.Slice(packages, func(i, j int) bool {
-		return packages[i].Stars < packages[j].Stars
+		return packages[i].Stars > packages[j].Stars
 	})
 	return packages
 }

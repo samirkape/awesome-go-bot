@@ -4,6 +4,7 @@ import (
 	"awesome-go-bot/gopackage"
 	"awesome-go-bot/gopackage/helper"
 	"awesome-go-bot/internal/service/chat"
+	"awesome-go-bot/internal/service/chat/keyboard"
 	"awesome-go-bot/internal/service/gobot"
 	"awesome-go-bot/internal/service/gobot/commands"
 	"awesome-go-bot/internal/service/gobot/constant"
@@ -30,17 +31,17 @@ func HandleQuery(botService *tgbotapi.BotAPI, packageService gopackage.AllPackag
 	command := commands.New()
 	switch chat.GetQuery() {
 	case command.GetStart():
-		err := gobot.Respond(chat, botService, constant.Start)
+		_, err := gobot.Respond(chat, botService, constant.Start, false)
 		if err != nil {
 			return err
 		}
 	case command.GetDescription():
-		err := gobot.Respond(chat, botService, constant.Description)
+		_, err := gobot.Respond(chat, botService, constant.Description, false)
 		if err != nil {
 			return err
 		}
 	case command.GetListCategories():
-		err := gobot.Respond(chat, botService, helper.ListToMessage(packageService.GetCategories()))
+		_, err := gobot.Respond(chat, botService, helper.ListToMessage(packageService.GetCategories()), false)
 		if err != nil {
 			return err
 		}
@@ -52,15 +53,13 @@ func HandleQuery(botService *tgbotapi.BotAPI, packageService gopackage.AllPackag
 			return err
 		}
 	case command.IsCategoryNumber(chat.GetQuery()):
-		packages := packageService.GetPackagesByCategoryNumber(chat.GetQuery())
-		messages := helper.BuildStringMessageBatch(packages, false)
-		err := gobot.RespondToMessages(chat, botService, messages)
+		err := keyboard.ProcessUsingInlineKeyboard(botService, packageService, chat)
 		if err != nil {
 			return err
 		}
 	default:
 		pkg := packageService.GetPackageByName(chat.GetQuery())
-		err := gobot.Respond(chat, botService, helper.PackageToMsg(pkg, true))
+		_, err := gobot.Respond(chat, botService, helper.PackageToMsg(pkg, true), false)
 		if err != nil {
 			return err
 		}

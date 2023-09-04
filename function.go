@@ -7,6 +7,7 @@ import (
 	"awesome-go-bot/internal/service/chat"
 	"awesome-go-bot/internal/service/chat/factory"
 	"awesome-go-bot/internal/service/chat/inline"
+	"awesome-go-bot/internal/service/chat/keyboard"
 	"awesome-go-bot/internal/service/chat/regular"
 	"awesome-go-bot/internal/service/gobot"
 	"awesome-go-bot/internal/service/gobot/config"
@@ -56,6 +57,11 @@ func ExecuteCommand(ctx context.Context, chat chat.Info) error {
 	// handle query
 	if chat.IsInline() {
 		err := inline.HandleQuery(botService, searchService, chat)
+		if err != nil {
+			return err
+		}
+	} else if chat.IsCallBack() {
+		err := keyboard.ProcessUsingInlineKeyboard(botService, packageService, chat)
 		if err != nil {
 			return err
 		}

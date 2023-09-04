@@ -20,7 +20,7 @@ func ListToMessage(list []gopackage.CategoryName) string {
 }
 
 func BuildStringMessageBatch(packages []gopackage.Package, forTop bool) []string {
-	const batchSize = 10
+	const batchSize = 5
 	var batch []string
 	for start := 0; start < len(packages); start += batchSize {
 		end := start + batchSize
