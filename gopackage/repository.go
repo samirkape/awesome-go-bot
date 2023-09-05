@@ -54,6 +54,9 @@ func (a AllPackages) GetPackageByName(name string) Package {
 }
 
 func (a AllPackages) GetPackagesByCategoryNumber(query string) []Package {
+	if strings.HasPrefix(query, "/") {
+		query = strings.TrimPrefix(query, "/")
+	}
 	categoryNumber, err := strconv.Atoi(query)
 	if err != nil {
 		logrus.Error(err)

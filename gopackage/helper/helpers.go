@@ -13,7 +13,7 @@ func ListToMessage(list []gopackage.CategoryName) string {
 	var msg strings.Builder
 	for i, pkg := range list {
 		index := i + 1
-		markdown := fmt.Sprintf("[%d. %s](%d)\n", index, pkg, index)
+		markdown := fmt.Sprintf("[%d %s](/%v)\n", index, pkg, index)
 		msg.WriteString(markdown)
 	}
 	return msg.String()

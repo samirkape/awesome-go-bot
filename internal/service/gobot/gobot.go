@@ -20,44 +20,19 @@ func New(config *config.Config) (*tgbotapi.BotAPI, error) {
 }
 
 // Respond will send msg string to user with userid
-func Respond(chat chat.Info, bot *tgbotapi.BotAPI, messageText string, markupEnabled bool) (int, error) {
-	var sentMessage tgbotapi.Message
-	var err error
-
-	if markupEnabled {
-		if chat.GetMessageId() != 0 {
-			messageConfig := defaultEditMessageConfig(chat.GetChatId(), chat.GetMessageId(), messageText)
-			markup := createInlineKeyboard()
-			messageConfig.ReplyMarkup = &markup
-			sentMessage, err = bot.Send(messageConfig)
-			if err != nil {
-				return 0, fmt.Errorf("message sending failed: %v", err)
-			}
-		} else {
-			messageConfig := defaultMessageConfig(chat.GetChatId(), messageText)
-			markup := createInlineKeyboard()
-			messageConfig.ReplyMarkup = &markup
-			sentMessage, err = bot.Send(messageConfig)
-			if err != nil {
-				return 0, fmt.Errorf("message sending failed: %v", err)
-			}
-		}
-	} else {
-		messageConfig := defaultMessageConfig(chat.GetChatId(), messageText)
-		sentMessage, err = bot.Send(messageConfig)
-		if err != nil {
-			return 0, fmt.Errorf("message sending failed: %v", err)
-		}
+func Respond(chat chat.Info, bot *tgbotapi.BotAPI, messageText string) error {
+	messageConfig := defaultMessageConfig(chat.GetChatId(), messageText)
+	_, err := bot.Send(messageConfig)
+	if err != nil {
+		return fmt.Errorf("message sending failed: %v", err)
 	}
-
-	messageId := sentMessage.MessageID
-	return messageId, nil
+	return nil
 }
 
 // RespondToMessages will send msg string to user with userid
 func RespondToMessages(chat chat.Info, bot *tgbotapi.BotAPI, messages []string) error {
 	for _, msg := range messages {
-		_, err := Respond(chat, bot, msg, false)
+		err := Respond(chat, bot, msg)
 		if err != nil {
 			logrus.Error("message sending failed: %v", err)
 			continue
@@ -90,11 +65,52 @@ func defaultEditMessageConfig(chatID int64, messageId int, text string) tgbotapi
 	}
 }
 
-func createInlineKeyboard() tgbotapi.InlineKeyboardMarkup {
+func trash() tgbotapi.InlineKeyboardMarkup {
 	// Create an inline keyboard with prev and next buttons
 	prevButton := tgbotapi.NewInlineKeyboardButtonData("Previous", "prev")
 	nextButton := tgbotapi.NewInlineKeyboardButtonData("Next", "next")
 	row := []tgbotapi.InlineKeyboardButton{prevButton, nextButton}
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(row)
+	return keyboard
+}
+
+func RespondToCallBack(chat chat.Info, bot *tgbotapi.BotAPI, messageText string, currentPage, totalPages int) (int, error) {
+	var sentMessage tgbotapi.Message
+	var err error
+	if chat.GetMessageId() != 0 {
+		messageConfig := defaultEditMessageConfig(chat.GetChatId(), chat.GetMessageId(), messageText)
+		markup := createInlineKeyboard(currentPage, totalPages)
+		messageConfig.ReplyMarkup = &markup
+		sentMessage, err = bot.Send(messageConfig)
+		if err != nil {
+			return 0, fmt.Errorf("message sending failed: %v", err)
+		}
+	} else {
+		messageConfig := defaultMessageConfig(chat.GetChatId(), messageText)
+		markup := createInlineKeyboard(currentPage, totalPages)
+		messageConfig.ReplyMarkup = &markup
+		sentMessage, err = bot.Send(messageConfig)
+		if err != nil {
+			return 0, fmt.Errorf("message sending failed: %v", err)
+		}
+	}
+	messageId := sentMessage.MessageID
+	return messageId, nil
+}
+
+// createInlineKeyboard creates an inline keyboard markup with "Previous," "Total Pages," and "Next" buttons.
+func createInlineKeyboard(currentPage, totalPages int) tgbotapi.InlineKeyboardMarkup {
+	// Calculate the page navigation buttons
+	prevButton := tgbotapi.NewInlineKeyboardButtonData("Previous", "prev")
+	nextButtonText := fmt.Sprintf("Next (%d/%d)", currentPage+1, totalPages)
+	nextButton := tgbotapi.NewInlineKeyboardButtonData(nextButtonText, "next")
+	totalPagesButton := tgbotapi.NewInlineKeyboardButtonData(fmt.Sprintf("Total Pages: %d", totalPages), "total_pages")
+
+	// Create a row for navigation buttons and total pages
+	navigationRow := []tgbotapi.InlineKeyboardButton{prevButton, totalPagesButton, nextButton}
+
+	// Combine navigation row
+	keyboard := tgbotapi.NewInlineKeyboardMarkup(navigationRow)
+
 	return keyboard
 }

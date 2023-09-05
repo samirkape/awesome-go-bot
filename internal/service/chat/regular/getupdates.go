@@ -31,17 +31,17 @@ func HandleQuery(botService *tgbotapi.BotAPI, packageService gopackage.AllPackag
 	command := commands.New()
 	switch chat.GetQuery() {
 	case command.GetStart():
-		_, err := gobot.Respond(chat, botService, constant.Start, false)
+		err := gobot.Respond(chat, botService, constant.Start)
 		if err != nil {
 			return err
 		}
 	case command.GetDescription():
-		_, err := gobot.Respond(chat, botService, constant.Description, false)
+		err := gobot.Respond(chat, botService, constant.Description)
 		if err != nil {
 			return err
 		}
 	case command.GetListCategories():
-		_, err := gobot.Respond(chat, botService, helper.ListToMessage(packageService.GetCategories()), false)
+		err := gobot.Respond(chat, botService, helper.ListToMessage(packageService.GetCategories()))
 		if err != nil {
 			return err
 		}
@@ -59,7 +59,7 @@ func HandleQuery(botService *tgbotapi.BotAPI, packageService gopackage.AllPackag
 		}
 	default:
 		pkg := packageService.GetPackageByName(chat.GetQuery())
-		_, err := gobot.Respond(chat, botService, helper.PackageToMsg(pkg, true), false)
+		err := gobot.Respond(chat, botService, helper.PackageToMsg(pkg, true))
 		if err != nil {
 			return err
 		}

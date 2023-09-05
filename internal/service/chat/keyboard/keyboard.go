@@ -29,6 +29,7 @@ func NewKeyboardChat(update *tgbotapi.Update) chat.Info {
 func ProcessUsingInlineKeyboard(botService *tgbotapi.BotAPI, packageService gopackage.AllPackages, chat chat.Info) error {
 	var err error
 	if chat.GetQuery() != "" {
+		index = 0
 		packages = packageService.GetPackagesByCategoryNumber(chat.GetQuery())
 	}
 	messages := helper.BuildStringMessageBatch(packages, false)
@@ -42,10 +43,12 @@ func ProcessUsingInlineKeyboard(botService *tgbotapi.BotAPI, packageService gopa
 		case "next":
 			if index < len(messages)-1 {
 				index++
+			} else {
+				index = 0
 			}
 		}
 	}
-	messageId, err = gobot.Respond(chat, botService, messages[index], true)
+	messageId, err = gobot.RespondToCallBack(chat, botService, messages[index], index, len(messages))
 	if err != nil {
 		return err
 	}

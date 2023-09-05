@@ -43,7 +43,11 @@ func (c *Commands) IsTopN(query string) string {
 }
 
 func (c *Commands) IsCategoryNumber(query string) string {
-	_, err := strconv.Atoi(query)
+	var newQuery string
+	if strings.HasPrefix(query, "/") {
+		newQuery = strings.TrimPrefix(query, "/")
+	}
+	_, err := strconv.Atoi(newQuery)
 	if err != nil {
 		return ""
 	}
