@@ -1,57 +1,68 @@
-package mybot
+package awesome_go_bot
 
 import (
+	mongodb2 "awesome-go-bot/domain/gopackage/mongodb"
+	"awesome-go-bot/gobot"
+	"awesome-go-bot/gobot/config"
+	"awesome-go-bot/internal/logger"
+	"awesome-go-bot/internal/services/chat/factory"
+	"awesome-go-bot/internal/services/packages"
+	"awesome-go-bot/internal/services/packages/analytics"
+	"awesome-go-bot/internal/services/packages/search"
+	"context"
 	"encoding/json"
 	"errors"
-	"github.com/samirkape/awesome-go-bot/internal/bot"
-	"github.com/samirkape/awesome-go-bot/internal/commands"
-	"github.com/samirkape/awesome-go-bot/internal/repository"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"io"
 	"log"
 	"net/http"
 )
 
-// HandleTelegramWebHook is a Google cloud function that handles all the requests made by the user.
-// Telegram asynchronously does HTTP POST request on this function.
-func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
-	// Parsing POST request made by telegram on behalf of user
-	response, err := responseDecoder(w, r)
-	if err != nil {
-		log.Printf("requesthandler: something went wrong when parsing the response %v", err)
-		return
-	}
+var queryError = errors.New("unable to handle query")
 
-	AllData := repository.GetAllPackages()
-	commands.Execute(response, AllData)
+func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	request, err := parseRequest(r.Body)
+	if err != nil {
+		log.Fatal("parsing error")
+	}
+	err = ExecuteCommand(ctx, request)
+	if err != nil {
+		logger.FieldLogger("failed for chatId: ", request.Message.Chat.ID).Error(err)
+	}
 }
 
-// A responseDecoder() parses JSON response from the POST request.
-// if all goes right, user id, message string and error value are returned.
-func responseDecoder(w http.ResponseWriter, r *http.Request) (*bot.Request, error) {
-	var request bot.RequestData
-	var inputQuery bot.Request
-
-	if r.Method == http.MethodPost {
-		log.Println(r.Body)
-		err := json.NewDecoder(r.Body).Decode(&request)
-		if err != nil {
-			log.Println(err)
-			return nil, err
-		}
-		err = r.Body.Close()
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		return nil, errors.New("responseDecoder: invalid request method")
+func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error {
+	// create new bot
+	botService, err := gobot.New(config.NewDefaultConfig())
+	if err != nil {
+		return err
 	}
-
-	// validate chat
-	if request.Message.Chat.ID > 0 {
-		inputQuery.ChatID = request.Message.Chat.ID
-		inputQuery.Command = request.Message.Text
-	} else {
-		return nil, errors.New("responseDecoder: invalid user chat-id")
+	// create new mongodb client
+	dbClient, err := mongodb2.New(mongodb2.NewDefaultConfig())
+	if err != nil {
+		return err
 	}
+	packageService := packages.NewService(dbClient)
+	// get all analyticsService from the database
+	analyticsService := analytics.NewService(packageService)
+	if err != nil {
+		return err
+	}
+	// create new search service
+	searchService := search.NewService(packageService)
+	// create new chat
+	chat := factory.NewChatService(incomingRequest, packageService, analyticsService, searchService, botService)
+	chat.HandleQuery()
+	return nil
+}
 
-	return &inputQuery, nil
+func parseRequest(body io.ReadCloser) (*tgbotapi.Update, error) {
+	var update *tgbotapi.Update
+	decoder := json.NewDecoder(body)
+	err := decoder.Decode(&update)
+	if err != nil {
+		return nil, err
+	}
+	return update, nil
 }
