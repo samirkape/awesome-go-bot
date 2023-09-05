@@ -30,7 +30,7 @@ is running once every day to synchronise https://awesome-go.com and star counts.
      * Number of packages. 
      * Last updated time.
 - [x] Decouple backend from frontend.
-- [] Add LRU cache to reduce Google cloud function's cold boot time.
+- [ ] Add LRU cache to reduce Google cloud function's cold boot time.
 - [x] Add inline mode to,
      * Group multiple message.
      * Fetch dev.to Golang articles corresponding to package category/tag.
