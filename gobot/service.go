@@ -1,9 +1,9 @@
 package gobot
 
 import (
-	"awesome-go-bot/internal/services/chat"
 	"fmt"
 	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samirkape/awesome-go-bot/internal/services/chat"
 	"github.com/sirupsen/logrus"
 )
 

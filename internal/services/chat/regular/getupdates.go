@@ -1,14 +1,14 @@
 package regular
 
 import (
-	"awesome-go-bot/domain/gopackage/helpers"
-	"awesome-go-bot/gobot"
-	"awesome-go-bot/gobot/commands"
-	"awesome-go-bot/gobot/constant"
-	"awesome-go-bot/internal/services/chat"
-	"awesome-go-bot/internal/services/chat/keyboard"
-	"awesome-go-bot/internal/services/packages/analytics"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samirkape/awesome-go-bot/domain/gopackage/helpers"
+	"github.com/samirkape/awesome-go-bot/gobot"
+	"github.com/samirkape/awesome-go-bot/gobot/commands"
+	"github.com/samirkape/awesome-go-bot/gobot/constant"
+	"github.com/samirkape/awesome-go-bot/internal/services/chat"
+	"github.com/samirkape/awesome-go-bot/internal/services/chat/keyboard"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"strings"
 )
 

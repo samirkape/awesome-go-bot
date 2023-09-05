@@ -1,9 +1,9 @@
 package search
 
 import (
-	"awesome-go-bot/internal/services/packages"
-	"awesome-go-bot/internal/services/packages/analytics/inmemory"
-	searchtrie "awesome-go-bot/internal/services/packages/search/trie"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
+	searchtrie "github.com/samirkape/awesome-go-bot/internal/services/packages/search/trie"
 )
 
 type Service interface {

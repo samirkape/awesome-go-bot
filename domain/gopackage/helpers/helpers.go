@@ -1,8 +1,8 @@
 package helpers
 
 import (
-	"awesome-go-bot/internal/services/packages/analytics/inmemory"
 	"fmt"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"strings"

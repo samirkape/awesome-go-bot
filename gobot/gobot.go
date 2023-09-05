@@ -3,8 +3,8 @@
 package gobot
 
 import (
-	"awesome-go-bot/gobot/config"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samirkape/awesome-go-bot/gobot/config"
 )
 
 func New(config *config.Config) (*tgbotapi.BotAPI, error) {

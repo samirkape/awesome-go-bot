@@ -1,8 +1,8 @@
 package analytics
 
 import (
-	"awesome-go-bot/internal/services/packages"
-	"awesome-go-bot/internal/services/packages/analytics/inmemory"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 )
 
 type Service interface {
