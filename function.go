@@ -53,8 +53,7 @@ func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error
 	searchService := search.NewService(packageService)
 	// create new chat
 	chat := factory.NewChatService(incomingRequest, packageService, analyticsService, searchService, botService)
-	chat.HandleQuery()
-	return nil
+	return chat.HandleQuery()
 }
 
 func parseRequest(body io.ReadCloser) (*tgbotapi.Update, error) {
