@@ -1,18 +1,18 @@
 package awesome_go_bot
 
 import (
-	mongodb2 "awesome-go-bot/domain/gopackage/mongodb"
-	"awesome-go-bot/gobot"
-	"awesome-go-bot/gobot/config"
-	"awesome-go-bot/internal/logger"
-	"awesome-go-bot/internal/services/chat/factory"
-	"awesome-go-bot/internal/services/packages"
-	"awesome-go-bot/internal/services/packages/analytics"
-	"awesome-go-bot/internal/services/packages/search"
 	"context"
 	"encoding/json"
 	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samirkape/awesome-go-bot/domain/gopackage/mongodb"
+	"github.com/samirkape/awesome-go-bot/gobot"
+	"github.com/samirkape/awesome-go-bot/gobot/config"
+	"github.com/samirkape/awesome-go-bot/internal/logger"
+	"github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 	"io"
 	"log"
 	"net/http"
@@ -39,7 +39,7 @@ func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error
 		return err
 	}
 	// create new mongodb client
-	dbClient, err := mongodb2.New(mongodb2.NewDefaultConfig())
+	dbClient, err := mongodb.New(mongodb.NewDefaultConfig())
 	if err != nil {
 		return err
 	}
