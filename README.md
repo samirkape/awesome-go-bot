@@ -1,6 +1,6 @@
 ## awesome-go-bot
 
-Link: https://bit.ly/39IHgzw
+Link: https://t.me/awsmgo_bot
 
 ### Description 
 
