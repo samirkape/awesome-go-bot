@@ -3,7 +3,6 @@ package awesome_go_bot
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/samirkape/awesome-go-bot/domain/gopackage/mongodb"
 	"github.com/samirkape/awesome-go-bot/gobot"
@@ -17,8 +16,6 @@ import (
 	"log"
 	"net/http"
 )
-
-var queryError = errors.New("unable to handle query")
 
 func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -53,8 +50,7 @@ func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error
 	searchService := search.NewService(packageService)
 	// create new chat
 	chat := factory.NewChatService(incomingRequest, packageService, analyticsService, searchService, botService)
-	chat.HandleQuery()
-	return nil
+	return chat.HandleQuery()
 }
 
 func parseRequest(body io.ReadCloser) (*tgbotapi.Update, error) {
