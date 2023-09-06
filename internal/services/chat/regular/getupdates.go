@@ -35,43 +35,28 @@ func (r *regular) HandleQuery() error {
 	chatService := r.Info
 	analyticsService := r.Service
 	botService := r.BotAPI
+	var messages []string
 
 	command := commands.New()
 	switch chatService.GetQuery() {
 	case command.GetStart():
-		err := gobot.Respond(chatService, botService, constant.Start)
-		if err != nil {
-			return err
-		}
+		return gobot.Respond(chatService, botService, constant.Start)
 	case command.GetDescription():
-		err := gobot.Respond(chatService, botService, constant.Description)
-		if err != nil {
-			return err
-		}
+		return gobot.Respond(chatService, botService, constant.Description)
 	case command.GetListCategories():
-		err := gobot.Respond(chatService, botService, helpers.ListToMessage(analyticsService.GetCategories()))
-		if err != nil {
-			return err
-		}
+		return gobot.Respond(chatService, botService, helpers.ListToMessage(analyticsService.GetCategories()))
 	case command.IsTopN(chatService.GetQuery()):
 		topN := analyticsService.GetTopPackagesSortedByStars(chatService.GetQuery())
-		messages := helpers.BuildStringMessageBatch(topN, true)
-		err := gobot.RespondToMessages(chatService, botService, messages)
-		if err != nil {
-			return err
+		if topN == nil {
+			return gobot.Respond(chatService, botService, constant.DefaultTopNMessage)
 		}
+		messages = helpers.BuildStringMessageBatch(topN, true)
+		return gobot.RespondToMessages(chatService, botService, messages)
 	case command.IsCategoryNumber(chatService.GetQuery()):
 		keyboardService := keyboard.NewRegularKeyboardChat(chatService, analyticsService, botService)
-		err := keyboardService.HandleQuery()
-		if err != nil {
-			return err
-		}
+		return keyboardService.HandleQuery()
 	default:
 		pkg := analyticsService.GetPackageByName(chatService.GetQuery())
-		err := gobot.Respond(chatService, botService, helpers.PackageToMsg(pkg, true))
-		if err != nil {
-			return err
-		}
+		return gobot.Respond(chatService, botService, helpers.PackageToMsg(pkg, true))
 	}
-	return nil
 }

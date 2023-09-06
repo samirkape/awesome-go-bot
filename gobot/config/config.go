@@ -9,6 +9,15 @@ type Config struct {
 	Token string
 }
 
+func NewConfig(token string) *Config {
+	if token == "" {
+		log.Fatal("TOKEN is not provided")
+	}
+	return &Config{
+		Token: token,
+	}
+}
+
 func NewDefaultConfig() *Config {
 	token, found := os.LookupEnv("TOKEN")
 	if !found {

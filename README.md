@@ -1,48 +1,50 @@
-## awesome-go-bot
+# Awesome-Go Bot
 
-Link: https://t.me/awsmgo_bot
+![Awesome-Go Bot](https://t.me/awsmgo_bot)
 
-### Description 
+## Description
 
-Interactive bot version of https://awesome-go.com.  
+Awesome-Go Bot is an interactive Telegram bot version of [Awesome-Go](https://awesome-go.com), a curated list of awesome Go libraries, frameworks, and software. This bot provides a convenient way to explore and discover Go packages, with additional features like filtering by GitHub repository star count and retrieving top Go repositories.
 
-Additionally, you can 
+### Features
 
-* Filter the list by Github repo star count.  
-* Get top Go repositories by simply sending *Top N* where N is any number in betwen 0 to maximum number of packages (around 2100 as of now).
+1. **Browse the Awesome-Go List**: You can browse the extensive Awesome-Go list right within Telegram.
+
+2. **Filter by Star Count**: Easily filter the list based on the number of stars a GitHub repository has.
+
+3. **Top Go Repositories**: Get the top Go repositories by sending a message with "Top N," where N is any number between 0 and the maximum number of packages (approximately 2100 as of now).
+
+4. **Search by Keyword**: You can search for packages using tags.
+
 
 ### Sync
 
-To make sure we are up to date with the new packages and star counts, [another lambda service](https://github.com/samirkape/awesome-go-sync) \
-is running once every day to synchronise https://awesome-go.com and star counts.
+To ensure that the bot is up to date with the latest packages and their star counts, a [Lambda service](https://github.com/samirkape/awesome-go-sync) runs daily to synchronize data from the [Awesome-Go website](https://awesome-go.com).
 
-### Stack
-* Google Cloud Function
-* MongoDB
-* Webhook
-* Telegram Bot API
-* Go1.13
+## Stack
 
-### TODO
+The Awesome-Go Bot is built using the following technologies:
 
-- [x] Search by tags
-- [x] Add /meta command to fetch metadata such as,
-     * Number of packages. 
-     * Last updated time.
-- [x] Decouple backend from frontend.
-- [ ] Add LRU cache to reduce Google cloud function's cold boot time.
-- [x] Add inline mode to,
-     * Group multiple message.
-     * Fetch dev.to Golang articles corresponding to package category/tag.
+- **Google Cloud Function**: Used to host the bot's backend logic.
 
-### Known Bugs
+- **MongoDB**: Stores data necessary for the bot's operation.
 
-1. **Category:** Style guide\
-**Kind:** Filter by star count\
-**Issue:** Github api get request is failing due to wrong URL path. This is happening\
-because every package in the style guide category is listed as a path to .md file instead of\
-Github repository.
+- **Webhook**: Facilitates communication between the bot and Telegram users.
 
-2. Some sub categories in the awesome-go.com are\
-being recorded as a separate categories due to inconsistent\
-fomatting.
+- **Telegram Bot API**: The bot communicates with users via Telegram's API.
+
+- **Go 1.21**: The programming language used for building the bot's backend.
+
+## TODO
+
+Here are some of the planned enhancements and features for the Awesome-Go Bot:
+
+- [x] Search by Tags: You can search for packages using tags.
+
+- [x] Meta Command: Fetch metadata, including the number of packages and the last updated time.
+
+- [ ] LRU Cache: Implement an LRU cache to reduce Google Cloud Function's cold boot time.
+
+- [x] Inline Mode: Group multiple messages and fetch Golang articles from dev.to corresponding to package category/tag.
+
+[Join the Telegram Bot](https://t.me/awsmgo_bot)
