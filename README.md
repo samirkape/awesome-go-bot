@@ -1,6 +1,6 @@
 # Awesome-Go Bot
 
-![Awesome-Go Bot](https://t.me/awsmgo_bot)
+Link: https://t.me/awsmgo_bot
 
 ## Description
 
