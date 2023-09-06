@@ -6,7 +6,6 @@ import (
 	"github.com/shivamMg/trie"
 	"slices"
 	"sort"
-	"strconv"
 	"strings"
 	"sync"
 )
@@ -109,11 +108,6 @@ func searchTrie(index *trie.Trie, query string, exact bool) *trie.SearchResults 
 func buildPackagesFromSearchResults(a inmemory.AllPackages, results *trie.SearchResults) []inmemory.Package {
 	var packages []inmemory.Package
 	for _, result := range results.Results {
-		categoryNumber, isCategory := result.Value.(int)
-		if isCategory {
-			packages = append(packages, a.GetPackagesByCategoryNumber(strconv.Itoa(categoryNumber))...)
-			return packages
-		}
 		pkg := result.Value.(inmemory.Package)
 		pkg.Name = strings.ToLower(pkg.Name)
 		packages = append(packages, pkg)

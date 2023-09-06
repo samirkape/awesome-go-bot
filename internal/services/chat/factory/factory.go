@@ -11,7 +11,7 @@ import (
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 )
 
-func NewChatService(request *tgbotapi.Update, packageService packages.Service, analyticsService analytics.Service, searchService search.Service, botService *tgbotapi.BotAPI) chat.Info {
+func NewChatService(request *tgbotapi.Update, packageService packages.Service, analyticsService analytics.Service, searchService search.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
 	if request.InlineQuery != nil {
 		return inline.NewInlineChat(request, searchService, botService)
 	} else if request.CallbackQuery != nil {

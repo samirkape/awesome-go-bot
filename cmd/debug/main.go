@@ -54,7 +54,7 @@ func defaultTest() error {
 	updates := botService.GetUpdatesChan(u)
 
 	for update := range updates {
-		chatService := factory.NewChatService(&update, packageService, analyticsService, searchService, botService)
+		chatService, _ := factory.NewChatService(&update, packageService, analyticsService, searchService, botService)
 		err := chatService.HandleQuery()
 		if err != nil {
 			return err

@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -49,21 +50,24 @@ func (a AllPackages) GetPackageByName(name string) Package {
 	return Package{}
 }
 
-func (a AllPackages) GetPackagesByCategoryNumber(query string) []Package {
+func (a AllPackages) GetPackagesByCategoryNumber(query string) ([]Package, error) {
 	if strings.HasPrefix(query, "/") {
 		query = strings.TrimPrefix(query, "/")
 	}
 	categoryNumber, err := strconv.Atoi(query)
 	if err != nil {
 		logrus.Error(err)
-		return nil
+		return nil, err
 	}
 	// sort categories
+	if categoryNumber > len(a) {
+		return nil, errors.New("category number is out of range")
+	}
 	packages := a[a.GetCategories()[categoryNumber+1]]
 	sort.Slice(packages, func(i, j int) bool {
 		return packages[i].Stars > packages[j].Stars
 	})
-	return packages
+	return packages, nil
 }
 
 // TODO optimize this

@@ -49,7 +49,10 @@ func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error
 	// create new search service
 	searchService := search.NewService(packageService)
 	// create new chat
-	chat := factory.NewChatService(incomingRequest, packageService, analyticsService, searchService, botService)
+	chat, err := factory.NewChatService(incomingRequest, packageService, analyticsService, searchService, botService)
+	if chat == nil {
+		return err
+	}
 	return chat.HandleQuery()
 }
 

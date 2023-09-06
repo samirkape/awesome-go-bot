@@ -1,6 +1,7 @@
 package keyboard
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/samirkape/awesome-go-bot/domain/gopackage/helpers"
 	"github.com/samirkape/awesome-go-bot/gobot"
@@ -20,7 +21,10 @@ type keyboardChat struct {
 	*tgbotapi.BotAPI
 }
 
-func NewDefaultKeyboardChat(update *tgbotapi.Update, analyticsService analytics.Service, botService *tgbotapi.BotAPI) chat.Info {
+func NewDefaultKeyboardChat(update *tgbotapi.Update, analyticsService analytics.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
+	if update.CallbackQuery == nil {
+		return nil, fmt.Errorf("callback query is nil: %+v", update)
+	}
 	query := update.CallbackQuery
 	return &keyboardChat{
 		Info: &chat.Chat{
@@ -30,7 +34,7 @@ func NewDefaultKeyboardChat(update *tgbotapi.Update, analyticsService analytics.
 		},
 		Service: analyticsService,
 		BotAPI:  botService,
-	}
+	}, nil
 }
 
 func NewRegularKeyboardChat(messageInfo chat.Info, analyticsService analytics.Service, botService *tgbotapi.BotAPI) chat.Info {
@@ -63,7 +67,10 @@ func (k keyboardChat) HandleQuery() error {
 	case command.IsTopN(chatService.GetQuery()):
 		packages = analyticsService.GetTopPackagesSortedByStars(chatService.GetQuery())
 	case command.IsCategoryNumber(chatService.GetQuery()):
-		packages = analyticsService.GetPackagesByCategoryNumber(chatService.GetQuery())
+		packages, err = analyticsService.GetPackagesByCategoryNumber(chatService.GetQuery())
+		if err != nil {
+			return err
+		}
 	}
 
 	messages = helpers.BuildStringMessageBatch(packages, true)

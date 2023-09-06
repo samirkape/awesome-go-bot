@@ -1,6 +1,7 @@
 package regular
 
 import (
+	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/samirkape/awesome-go-bot/domain/gopackage/helpers"
 	"github.com/samirkape/awesome-go-bot/gobot"
@@ -18,7 +19,10 @@ type regular struct {
 	chat.Info
 }
 
-func NewRegularChat(update *tgbotapi.Update, analyticsService analytics.Service, botService *tgbotapi.BotAPI) chat.Info {
+func NewRegularChat(update *tgbotapi.Update, analyticsService analytics.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
+	if update.Message == nil {
+		return nil, fmt.Errorf("regular message is nil: %+v", update)
+	}
 	query := strings.TrimSpace(update.Message.Text)
 	return &regular{
 		Info: &chat.Chat{
@@ -28,7 +32,7 @@ func NewRegularChat(update *tgbotapi.Update, analyticsService analytics.Service,
 		},
 		Service: analyticsService,
 		BotAPI:  botService,
-	}
+	}, nil
 }
 
 func (r *regular) HandleQuery() error {

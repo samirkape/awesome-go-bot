@@ -8,7 +8,7 @@ import (
 type Service interface {
 	GetCategories() []inmemory.CategoryName
 	GetPackagesByCategory(inmemory.CategoryName) []inmemory.Package
-	GetPackagesByCategoryNumber(string) []inmemory.Package
+	GetPackagesByCategoryNumber(string) ([]inmemory.Package, error)
 	GetTopPackagesSortedByStars(string) []inmemory.Package
 	GetPackageByName(string) inmemory.Package
 }
