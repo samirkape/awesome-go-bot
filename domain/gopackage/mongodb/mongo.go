@@ -9,18 +9,19 @@ import (
 var client *mongo.Client
 
 func New(config *Config) (*mongo.Client, error) {
-	// get database handle
-	clientOptions := options.Client().ApplyURI(config.GetURL())
-	client, err := mongo.Connect(context.Background(), clientOptions)
-	if err != nil {
-		return nil, err
-	}
+	var err error
+	if client == nil {
+		clientOptions := options.Client().ApplyURI(config.GetURL())
+		client, err = mongo.Connect(context.Background(), clientOptions)
+		if err != nil {
+			return nil, err
+		}
 
-	// check the connection
-	err = client.Ping(context.Background(), nil)
-	if err != nil {
-		return nil, err
+		// check the connection
+		err = client.Ping(context.Background(), nil)
+		if err != nil {
+			return nil, err
+		}
 	}
-
 	return client, nil
 }

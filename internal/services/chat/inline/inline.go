@@ -1,10 +1,10 @@
 package inline
 
 import (
-	"awesome-go-bot/internal/services/chat"
-	"awesome-go-bot/internal/services/packages/analytics/inmemory"
-	"awesome-go-bot/internal/services/packages/search"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samirkape/awesome-go-bot/internal/services/chat"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 	"log"
 	"strconv"
 	"strings"

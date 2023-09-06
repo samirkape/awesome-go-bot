@@ -1,8 +1,8 @@
 package searchtrie
 
 import (
-	"awesome-go-bot/internal/services/packages"
-	"awesome-go-bot/internal/services/packages/analytics/inmemory"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 	"github.com/shivamMg/trie"
 	"slices"
 	"sort"
@@ -36,10 +36,10 @@ func buildPackageIndex(a inmemory.AllPackages) *trie.Trie {
 }
 
 func initTrie(t *trie.Trie, allPackages inmemory.AllPackages) *trie.Trie {
-	categoryIndex := 0
-	for categoryName, packages := range allPackages {
-		buildCategoryIndex(t, categoryIndex, categoryName)
-		for _, pkg := range packages {
+	//categoryIndex := 0
+	for _, pkgs := range allPackages {
+		//buildCategoryIndex(t, categoryIndex, categoryName)
+		for _, pkg := range pkgs {
 			pkgInfoStrings := getPkgInfoStrings(pkg)
 			insertPackageInfo(t, pkgInfoStrings, pkg)
 		}

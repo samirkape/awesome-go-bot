@@ -1,12 +1,12 @@
 package keyboard
 
 import (
-	"awesome-go-bot/domain/gopackage/helpers"
-	"awesome-go-bot/gobot"
-	"awesome-go-bot/internal/services/chat"
-	"awesome-go-bot/internal/services/packages/analytics"
-	"awesome-go-bot/internal/services/packages/analytics/inmemory"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samirkape/awesome-go-bot/domain/gopackage/helpers"
+	"github.com/samirkape/awesome-go-bot/gobot"
+	"github.com/samirkape/awesome-go-bot/internal/services/chat"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 )
 
 var index, messageId int

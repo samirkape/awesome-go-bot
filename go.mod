@@ -1,4 +1,4 @@
-module awesome-go-bot
+module github.com/samirkape/awesome-go-bot
 
 go 1.21
 

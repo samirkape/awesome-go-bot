@@ -1,14 +1,16 @@
 package packages
 
 import (
-	"awesome-go-bot/domain/gopackage/mongodb"
-	"awesome-go-bot/internal/services/packages/analytics/inmemory"
 	"context"
+	"github.com/samirkape/awesome-go-bot/domain/gopackage/mongodb"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"sort"
 )
+
+var cache inmemory.AllPackages
 
 type Service interface {
 	GetAllPackages() inmemory.AllPackages
@@ -23,20 +25,23 @@ func NewService(client *mongo.Client) Service {
 }
 
 func (c *Client) GetAllPackages() inmemory.AllPackages {
-	collections := c.listCollections(mongodb.TABLENAME)
-	packages := make(map[inmemory.CategoryName][]inmemory.Package)
-	for _, collectionName := range collections {
-		p, err := c.getPackagesByCollectionName(mongodb.TABLENAME, collectionName)
-		if err != nil {
-			return nil
+	if cache == nil {
+		collections := c.listCollections(mongodb.TABLENAME)
+		packages := make(map[inmemory.CategoryName][]inmemory.Package)
+		for _, collectionName := range collections {
+			p, err := c.getPackagesByCollectionName(mongodb.TABLENAME, collectionName)
+			if err != nil {
+				return nil
+			}
+			// sort before adding to map
+			sort.Slice(p, func(i, j int) bool {
+				return p[i].Stars > p[j].Stars
+			})
+			packages[inmemory.CategoryName(collectionName)] = p
 		}
-		// sort before adding to map
-		sort.Slice(p, func(i, j int) bool {
-			return p[i].Stars > p[j].Stars
-		})
-		packages[inmemory.CategoryName(collectionName)] = p
+		cache = packages
 	}
-	return packages
+	return cache
 }
 
 func (c *Client) listCollections(databaseName string) (collections []string) {
