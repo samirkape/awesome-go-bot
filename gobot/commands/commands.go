@@ -39,7 +39,7 @@ func (c *Commands) IsTopN(query string) string {
 	if strings.HasPrefix(query, c.TopN) {
 		return query
 	}
-	return ""
+	return "nope"
 }
 
 func (c *Commands) IsCategoryNumber(query string) string {
@@ -49,7 +49,7 @@ func (c *Commands) IsCategoryNumber(query string) string {
 	}
 	_, err := strconv.Atoi(newQuery)
 	if err != nil {
-		return ""
+		return "nope"
 	}
 	return query
 }

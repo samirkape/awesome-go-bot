@@ -45,7 +45,7 @@ func packagesToMsg(packages []inmemory.Package, forTop bool) string {
 func PackageToMsg(pkg inmemory.Package, forTopN bool) string {
 	var category string
 	name := cases.Title(language.AmericanEnglish).String(pkg.Name)
-	stars := fmt.Sprintf("Stars: %d\n", pkg.Stars)
+	stars := fmt.Sprintf("★ %d\n", pkg.Stars)
 	url := fmt.Sprintf("[%s](%s)\n", name, pkg.URL)
 	info := pkg.Info
 

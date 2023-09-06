@@ -35,7 +35,6 @@ func (r *regular) HandleQuery() error {
 	chatService := r.Info
 	analyticsService := r.Service
 	botService := r.BotAPI
-	var messages []string
 
 	command := commands.New()
 	switch chatService.GetQuery() {
@@ -45,14 +44,7 @@ func (r *regular) HandleQuery() error {
 		return gobot.Respond(chatService, botService, constant.Description)
 	case command.GetListCategories():
 		return gobot.Respond(chatService, botService, helpers.ListToMessage(analyticsService.GetCategories()))
-	case command.IsTopN(chatService.GetQuery()):
-		topN := analyticsService.GetTopPackagesSortedByStars(chatService.GetQuery())
-		if topN == nil {
-			return gobot.Respond(chatService, botService, constant.DefaultTopNMessage)
-		}
-		messages = helpers.BuildStringMessageBatch(topN, true)
-		return gobot.RespondToMessages(chatService, botService, messages)
-	case command.IsCategoryNumber(chatService.GetQuery()):
+	case command.IsTopN(chatService.GetQuery()), command.IsCategoryNumber(chatService.GetQuery()):
 		keyboardService := keyboard.NewRegularKeyboardChat(chatService, analyticsService, botService)
 		return keyboardService.HandleQuery()
 	default:

@@ -63,7 +63,7 @@ func createInlineKeyboard(currentPage, totalPages int) tgbotapi.InlineKeyboardMa
 	prevButton := tgbotapi.NewInlineKeyboardButtonData("Previous", "prev")
 	nextButtonText := fmt.Sprintf("Next (%d/%d)", currentPage+1, totalPages)
 	nextButton := tgbotapi.NewInlineKeyboardButtonData(nextButtonText, "next")
-	totalPagesButton := tgbotapi.NewInlineKeyboardButtonData(fmt.Sprintf("Total Pages: %d", totalPages), "total_pages")
+	totalPagesButton := tgbotapi.NewInlineKeyboardButtonData(fmt.Sprintf("<< %d >>", totalPages), "total_pages")
 
 	// Create a row for navigation buttons and total pages
 	navigationRow := []tgbotapi.InlineKeyboardButton{prevButton, totalPagesButton, nextButton}
