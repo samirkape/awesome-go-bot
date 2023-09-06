@@ -1,12 +1,17 @@
 package constant
 
 const Start = `
-	Supported commands:
-	/listcategories - List all categories
-	/top N - e.g /top10
-	/description - Get description of the bot
-	/start - Get started with the bot
-	list packages for category - e.g /10 
+	*Supported commands:*
+
+	- /listcategories - List all categories
+
+	- get packages for category - e.g /5	
+
+	- /top N - e.g /top10
+
+	- /description - Get description of the bot
+	
+	- /start - Get started with the bot
 `
 
 const Description = `I can provide you with brief information about over 2,000 Go packages, frameworks, and libraries scraped from awesome-go.com. This can be a helpful resource for learning about the Go community's contributions in your free time.
@@ -19,4 +24,4 @@ You can also get information about the top N Go repositories by replying with to
 For more command options, send /start.
 `
 
-const DefaultTopNMessage = "Try /topN where N is a number between 1 and 200"
+const DefaultTopNMessage = "Try /topN where N is a number between 1 and 200 for example /top10"
