@@ -1,6 +1,6 @@
 # Awesome-Go Bot
 
-Link: https://t.me/awsmgo_bot
+[Join the Telegram Bot](https://t.me/awsmgo_bot)
 
 ## Description
 
@@ -47,4 +47,3 @@ Here are some of the planned enhancements and features for the Awesome-Go Bot:
 
 - [x] Inline Mode: Group multiple messages and fetch Golang articles from dev.to corresponding to package category/tag.
 
-[Join the Telegram Bot](https://t.me/awsmgo_bot)
