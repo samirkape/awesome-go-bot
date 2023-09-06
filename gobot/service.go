@@ -29,6 +29,7 @@ func RespondToMessages(chat chat.Info, bot *tgbotapi.BotAPI, messages []string) 
 	return nil
 }
 
+// RespondToCallBack will respond to callback query
 func RespondToCallBack(chat chat.Info, bot *tgbotapi.BotAPI, messageText string, currentPage, totalPages int) (int, error) {
 	var sentMessage tgbotapi.Message
 	var err error
@@ -41,6 +42,7 @@ func RespondToCallBack(chat chat.Info, bot *tgbotapi.BotAPI, messageText string,
 	return messageId, nil
 }
 
+// getMessageConfig creates a message config with the given message text and inline keyboard.
 func getMessageConfig(chat chat.Info, currentPage, totalPages int, messageText string) tgbotapi.Chattable {
 	if chat.GetMessageId() != 0 {
 		messageConfig := defaultEditMessageConfig(chat.GetChatId(), chat.GetMessageId(), messageText)
