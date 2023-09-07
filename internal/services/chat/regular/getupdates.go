@@ -64,14 +64,16 @@ func (r *regular) HandleQuery() error {
 	analyticsService := r.Service
 	botService := r.BotAPI
 
+	withHtml := gobot.WithCustomParsing(tgbotapi.ModeHTML)
+
 	command := commands.New()
 	switch chatService.GetQuery() {
 	case command.GetStart():
-		return gobot.Respond(chatService, botService, constant.SupportedCommands, gobot.WithCustomParsing(tgbotapi.ModeHTML))
+		return gobot.Respond(chatService, botService, constant.SupportedCommands, withHtml)
 	case command.GetDescription():
 		return gobot.Respond(chatService, botService, constant.Description)
 	case command.GetListCategories():
-		return gobot.Respond(chatService, botService, helpers.ListToMessage(analyticsService.GetCategories()))
+		return gobot.Respond(chatService, botService, helpers.CategoriesToMessage(analyticsService.GetCategories()), withHtml)
 	case command.IsTopN(chatService.GetQuery()), command.IsCategoryNumber(chatService.GetQuery()):
 		keyboardService := keyboard.NewRegularKeyboardChat(chatService, analyticsService, botService)
 		return keyboardService.HandleQuery()

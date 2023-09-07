@@ -29,3 +29,5 @@ For more command options, send /start.
 const DefaultTopNMessage = "Try /topN where N is a number between 1 and 200 for example /top10"
 
 const CommandPrefix = "/"
+
+const CategoryHelper = `Now respond with the number of the category you want to see. For example, to list all the packages for the <i> Actual Middlewares </i> category, you would reply with /1.`

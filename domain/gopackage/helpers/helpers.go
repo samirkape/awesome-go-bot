@@ -2,20 +2,22 @@ package helpers
 
 import (
 	"fmt"
+	"github.com/samirkape/awesome-go-bot/gobot/constant"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"strings"
 )
 
-// ListToMessage Converts slice of strings into a single string.
-func ListToMessage(list []inmemory.CategoryName) string {
+// CategoriesToMessage Converts slice of strings into a single string.
+func CategoriesToMessage(list []inmemory.CategoryName) string {
 	var msg strings.Builder
 	for i, pkg := range list {
 		index := i + 1
 		markdown := fmt.Sprintf("[%d %s](/%v)\n", index, pkg, index)
 		msg.WriteString(markdown)
 	}
+	msg.WriteString(constant.CategoryHelper)
 	return msg.String()
 }
 
