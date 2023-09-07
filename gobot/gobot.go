@@ -33,7 +33,7 @@ func defaultEditMessageConfig(chatID int64, messageId int, text string) tgbotapi
 			ChatID:    chatID,
 			MessageID: messageId,
 		},
-		ParseMode:             "markdown",
+		ParseMode:             tgbotapi.ModeMarkdown,
 		Text:                  text,
 		DisableWebPagePreview: true,
 	}
