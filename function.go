@@ -58,6 +58,7 @@ func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error
 	if chatService == nil {
 		return err
 	}
+	logger.FieldLogger("query: ", chatService.GetQuery()).Info("query received")
 	return chatService.HandleQuery()
 }
 

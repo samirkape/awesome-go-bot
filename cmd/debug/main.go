@@ -9,6 +9,7 @@ import (
 	"github.com/samirkape/awesome-go-bot/domain/gopackage/mongodb"
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/config"
+	"github.com/samirkape/awesome-go-bot/internal/logger"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
 	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages"
@@ -62,6 +63,8 @@ func defaultTest() error {
 			internalerrors.RespondToError(err, botService, newChat)
 		}
 		chatService, err := factory.NewChatService(newChat, analyticsService, searchService, botService)
+		log.Println(err)
+		logger.FieldLogger("query: ", chatService.GetQuery()).Info("query received")
 		chatService.HandleQuery()
 	}
 	return nil

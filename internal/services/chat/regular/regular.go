@@ -43,7 +43,7 @@ func NewValidatedChat(update *tgbotapi.Update) (chat.Info, error) {
 		if err == nil {
 			updatedQuery := fmt.Sprintf("%s%s", constant.CommandPrefix, query)
 			return newRegular(chatId, query), internalerrors.NewValidationError(invalidQueryError, updatedQuery)
-		} else {
+		} else if update.Message.ViaBot == nil {
 			return newRegular(chatId, query), internalerrors.NewValidationError(nonNumericQueryError, startCommand)
 		}
 	}

@@ -14,9 +14,10 @@ func CategoriesToMessage(list []inmemory.CategoryName) string {
 	var msg strings.Builder
 	for i, pkg := range list {
 		index := i + 1
-		markdown := fmt.Sprintf("[%d %s](/%v)\n", index, pkg, index)
+		markdown := fmt.Sprintf("%d %s\n", index, pkg)
 		msg.WriteString(markdown)
 	}
+	msg.WriteString("\n")
 	msg.WriteString(constant.CategoryHelper)
 	return msg.String()
 }
