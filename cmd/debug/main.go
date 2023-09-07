@@ -10,6 +10,7 @@ import (
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/config"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
+	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
@@ -31,6 +32,7 @@ func main() {
 }
 
 func defaultTest() error {
+	// create new bot
 	botService, err := gobot.New(config.NewConfig(os.Getenv("TRIAL_BOT_TOKEN")))
 	if err != nil {
 		return err
@@ -54,11 +56,13 @@ func defaultTest() error {
 	updates := botService.GetUpdatesChan(u)
 
 	for update := range updates {
-		chatService, _ := factory.NewChatService(&update, packageService, analyticsService, searchService, botService)
-		err := chatService.HandleQuery()
+		// create new chat
+		newChat, err := factory.NewChat(&update)
 		if err != nil {
-			return err
+			internalerrors.RespondToError(err, botService, newChat)
 		}
+		chatService, err := factory.NewChatService(newChat, analyticsService, searchService, botService)
+		chatService.HandleQuery()
 	}
 	return nil
 }

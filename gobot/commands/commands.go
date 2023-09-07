@@ -15,7 +15,7 @@ type Commands struct {
 
 func New() *Commands {
 	return &Commands{
-		Start:          "/start",
+		Start:          "/commands",
 		ListCategories: "/listcategories",
 		GetPackages:    "/selectcategory",
 		TopN:           "/top",

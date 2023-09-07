@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat"
-	"github.com/sirupsen/logrus"
 )
 
 // Respond will send msg string to user with userid
-func Respond(chat chat.Info, bot *tgbotapi.BotAPI, messageText string) error {
+func Respond(chat chat.Info, bot *tgbotapi.BotAPI, messageText string, configOptions ...func(*tgbotapi.MessageConfig)) error {
 	messageConfig := defaultMessageConfig(chat.GetChatId(), messageText)
+	for _, option := range configOptions {
+		option(&messageConfig)
+	}
 	_, err := bot.Send(messageConfig)
 	if err != nil {
 		return fmt.Errorf("message sending failed: %v", err)
@@ -17,16 +19,10 @@ func Respond(chat chat.Info, bot *tgbotapi.BotAPI, messageText string) error {
 	return nil
 }
 
-// RespondToMessages will send msg string to user with userid
-func RespondToMessages(chat chat.Info, bot *tgbotapi.BotAPI, messages []string) error {
-	for _, msg := range messages {
-		err := Respond(chat, bot, msg)
-		if err != nil {
-			logrus.Error("message sending failed: %v", err)
-			continue
-		}
+func WithCustomParsing(mode string) func(*tgbotapi.MessageConfig) {
+	return func(messageConfig *tgbotapi.MessageConfig) {
+		messageConfig.ParseMode = mode
 	}
-	return nil
 }
 
 // RespondToCallBack will respond to callback query

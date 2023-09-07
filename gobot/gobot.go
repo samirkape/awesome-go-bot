@@ -21,7 +21,7 @@ func defaultMessageConfig(chatID int64, text string) tgbotapi.MessageConfig {
 			ChatID:           chatID,
 			ReplyToMessageID: 0,
 		},
-		ParseMode:             "markdown",
+		ParseMode:             tgbotapi.ModeMarkdownV2,
 		Text:                  text,
 		DisableWebPagePreview: true,
 	}

@@ -1,17 +1,19 @@
 package constant
 
-const Start = `
-	*Supported commands:*
+const SupportedCommands = `
+Supported commands:
 
-	- /listcategories - List all categories
+- /listcategories - List all categories
 
-	- get packages for category - e.g /5	
+- get packages for category - e.g /5
 
-	- /top N - e.g /top10
+- /topN - e.g /top10
 
-	- /description - Get description of the bot
-	
-	- /start - Get started with the bot
+- /description - Get description of the bot
+
+- /commands - Get all supported commands
+
+- @awsmgo_bot <i>query</i>- where query is the name or prefix of the package you want to search for
 `
 
 const Description = `I can provide you with brief information about over 2,000 Go packages, frameworks, and libraries scraped from awesome-go.com. This can be a helpful resource for learning about the Go community's contributions in your free time.
@@ -25,3 +27,5 @@ For more command options, send /start.
 `
 
 const DefaultTopNMessage = "Try /topN where N is a number between 1 and 200 for example /top10"
+
+const CommandPrefix = "/"
