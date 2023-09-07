@@ -18,7 +18,7 @@ func NewConfig(token string) *Config {
 	}
 }
 
-func NewDefaultConfig() *Config {
+func WithDefaultConfig() *Config {
 	token, found := os.LookupEnv("TOKEN")
 	if !found {
 		log.Fatal("TOKEN environment variable is not set")

@@ -39,7 +39,7 @@ func defaultTest() error {
 		return err
 	}
 	// create new mongodb client
-	dbClient, err := mongodb.New(mongodb.NewDefaultConfig())
+	dbClient, err := mongodb.New(mongodb.WithDefaultConfig())
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func defaultTest() error {
 func searchTest() {
 	for i := 0; i < 5; i++ {
 		start := time.Now()
-		dbClient, _ := mongodb.New(mongodb.NewDefaultConfig())
+		dbClient, _ := mongodb.New(mongodb.WithDefaultConfig())
 		packageService := packages.NewService(dbClient)
 		searchService := search.NewService(packageService)
 		res := searchService.Search("kube")

@@ -1,7 +1,6 @@
 package awesome_go_bot
 
 import (
-	"context"
 	"encoding/json"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/samirkape/awesome-go-bot/domain/gopackage/mongodb"
@@ -19,33 +18,33 @@ import (
 )
 
 func HandleTelegramWebHook(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
 	request, err := parseRequest(r.Body)
 	if err != nil {
 		log.Fatal("parsing error")
 	}
-	err = ExecuteCommand(ctx, request)
+	err = ExecuteCommand(request)
 	if err != nil {
 		logger.FieldLogger("failed for chatId: ", request.Message.Chat.ID).Error(err)
 	}
 }
 
-func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error {
+func ExecuteCommand(incomingRequest *tgbotapi.Update) error {
 	// create new bot
-	botService, err := gobot.New(config.NewDefaultConfig())
+	botService, err := gobot.New(config.WithDefaultConfig())
 	if err != nil {
 		return err
 	}
+	// create new chat
 	chatInfo, err := factory.NewChat(incomingRequest)
 	if err != nil {
 		return internalerrors.RespondToError(err, botService, chatInfo)
 	}
 	// create new mongodb client
-	dbClient, err := mongodb.New(mongodb.NewDefaultConfig())
+	client, err := mongodb.New(mongodb.WithDefaultConfig())
 	if err != nil {
 		return err
 	}
-	packageService := packages.NewService(dbClient)
+	packageService := packages.NewService(client)
 	// get all analyticsService from the database
 	analyticsService := analytics.NewService(packageService)
 	if err != nil {
@@ -53,7 +52,7 @@ func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error
 	}
 	// create new search service
 	searchService := search.NewService(packageService)
-	// create new chat
+	// create new chat service
 	chatService, err := factory.NewChatService(chatInfo, analyticsService, searchService, botService)
 	if chatService == nil {
 		return err

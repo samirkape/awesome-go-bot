@@ -19,7 +19,7 @@ func NewConfig(tableName, URL string) *Config {
 	}
 }
 
-func NewDefaultConfig() *Config {
+func WithDefaultConfig() *Config {
 	URL, found := os.LookupEnv("ATLAS_URI")
 	if !found {
 		log.Fatal("MONGO_URL environment variable is not set")
