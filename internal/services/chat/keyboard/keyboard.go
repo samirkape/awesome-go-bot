@@ -62,7 +62,7 @@ func (k keyboardChat) HandleQuery() error {
 	botService := k.BotAPI
 	query := chatService.GetQuery()
 	command := commands.New()
-	includeCategoryInMessage := false
+	includeCategoryInMessage := true
 
 	var err error
 
@@ -74,7 +74,7 @@ func (k keyboardChat) HandleQuery() error {
 	case command.IsTopN(chatService.GetQuery()):
 		packages = analyticsService.GetTopPackagesSortedByStars(chatService.GetQuery())
 	case command.IsCategoryNumber(chatService.GetQuery()):
-		includeCategoryInMessage = true
+		includeCategoryInMessage = false
 		packages, err = analyticsService.GetPackagesByCategoryNumber(chatService.GetQuery())
 		if err != nil {
 			return err
