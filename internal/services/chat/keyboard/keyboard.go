@@ -97,6 +97,8 @@ func (k keyboardChat) HandleQuery() error {
 			} else {
 				index = 0
 			}
+		default:
+			return nil
 		}
 	}
 
