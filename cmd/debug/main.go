@@ -58,11 +58,11 @@ func defaultTest() error {
 
 	for update := range updates {
 		// create new chat
-		newChat, err := factory.NewChat(&update)
+		newChat, err := factory.New(&update)
 		if err != nil {
 			internalerrors.RespondToError(err, botService, newChat)
 		}
-		chatService, err := factory.NewChatService(newChat, analyticsService, searchService, botService)
+		chatService, err := factory.NewService(newChat, analyticsService, searchService, botService)
 		log.Println(err)
 		logger.FieldLogger("query: ", chatService.GetQuery()).Info("query received")
 		chatService.HandleQuery()

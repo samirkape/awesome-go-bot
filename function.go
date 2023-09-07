@@ -7,7 +7,7 @@ import (
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/config"
 	"github.com/samirkape/awesome-go-bot/internal/logger"
-	"github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
+	chatfactory "github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
 	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
@@ -35,7 +35,7 @@ func ExecuteCommand(incomingRequest *tgbotapi.Update) error {
 		return err
 	}
 	// create new chat
-	chatInfo, err := factory.NewChat(incomingRequest)
+	chatInfo, err := chatfactory.New(incomingRequest)
 	if err != nil {
 		return internalerrors.RespondToError(err, botService, chatInfo)
 	}
@@ -53,7 +53,7 @@ func ExecuteCommand(incomingRequest *tgbotapi.Update) error {
 	// create new search service
 	searchService := search.NewService(packageService)
 	// create new chat service
-	chatService, err := factory.NewChatService(chatInfo, analyticsService, searchService, botService)
+	chatService, err := chatfactory.NewService(chatInfo, analyticsService, searchService, botService)
 	if chatService == nil {
 		return err
 	}

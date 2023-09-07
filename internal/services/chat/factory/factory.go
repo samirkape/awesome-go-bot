@@ -10,7 +10,7 @@ import (
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 )
 
-func NewChatService(chat chat.Info, analyticsService analytics.Service, searchService search.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
+func NewService(chat chat.Info, analyticsService analytics.Service, searchService search.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
 	if chat.IsInline() {
 		return inline.NewInlineChat(chat, searchService, botService)
 	} else if chat.IsCallBack() {
@@ -20,7 +20,7 @@ func NewChatService(chat chat.Info, analyticsService analytics.Service, searchSe
 	}
 }
 
-func NewChat(request *tgbotapi.Update) (chat.Info, error) {
+func New(request *tgbotapi.Update) (chat.Info, error) {
 	if request.InlineQuery != nil {
 		return inline.NewChat(request)
 	} else if request.CallbackQuery != nil {
