@@ -60,10 +60,10 @@ func (a AllPackages) GetPackagesByCategoryNumber(query string) ([]Package, error
 		return nil, err
 	}
 	// sort categories
-	if categoryNumber > len(a) {
+	if categoryNumber > len(a.GetCategories()) {
 		return nil, errors.New("category number is out of range")
 	}
-	packages := a[a.GetCategories()[categoryNumber+1]]
+	packages := a[a.GetCategories()[categoryNumber-1]]
 	sort.Slice(packages, func(i, j int) bool {
 		return packages[i].Stars > packages[j].Stars
 	})

@@ -1,9 +1,9 @@
 package inline
 
 import (
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat"
+	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 	"log"
@@ -17,17 +17,21 @@ type inlineChat struct {
 	chat.Info
 }
 
-func NewInlineChat(update *tgbotapi.Update, searchService search.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
+func NewChat(update *tgbotapi.Update) (chat.Info, error) {
 	if update.InlineQuery == nil {
-		return nil, fmt.Errorf("inline query is nil")
+		return &chat.Chat{}, internalerrors.NewValidationError("inline query is nil")
 	}
 	query := strings.TrimSpace(update.InlineQuery.Query)
+	return inlineChat{Info: &chat.Chat{
+		QueryId: update.InlineQuery.ID,
+		Query:   query,
+		Inline:  true,
+	}}, nil
+}
+
+func NewInlineChat(chat chat.Info, searchService search.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
 	return &inlineChat{
-		Info: &chat.Chat{
-			QueryId: update.InlineQuery.ID,
-			Query:   query,
-			Inline:  true,
-		},
+		Info:    chat,
 		BotAPI:  botService,
 		Service: searchService,
 	}, nil

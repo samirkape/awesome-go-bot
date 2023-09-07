@@ -1,12 +1,12 @@
 package keyboard
 
 import (
-	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/samirkape/awesome-go-bot/domain/gopackage/helpers"
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/commands"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat"
+	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 )
@@ -21,9 +21,9 @@ type keyboardChat struct {
 	*tgbotapi.BotAPI
 }
 
-func NewDefaultKeyboardChat(update *tgbotapi.Update, analyticsService analytics.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
+func NewChat(update *tgbotapi.Update) (chat.Info, error) {
 	if update.CallbackQuery == nil {
-		return nil, fmt.Errorf("callback query is nil: %+v", update)
+		return nil, internalerrors.NewValidationError("callback query is nil")
 	}
 	query := update.CallbackQuery
 	return &keyboardChat{
@@ -32,6 +32,12 @@ func NewDefaultKeyboardChat(update *tgbotapi.Update, analyticsService analytics.
 			CallBackQuery: query,
 			CallBack:      true,
 		},
+	}, nil
+}
+
+func NewDefaultKeyboardChat(chat chat.Info, analyticsService analytics.Service, botService *tgbotapi.BotAPI) (chat.Info, error) {
+	return &keyboardChat{
+		Info:    chat,
 		Service: analyticsService,
 		BotAPI:  botService,
 	}, nil

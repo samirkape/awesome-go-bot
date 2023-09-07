@@ -9,6 +9,7 @@ import (
 	"github.com/samirkape/awesome-go-bot/gobot/config"
 	"github.com/samirkape/awesome-go-bot/internal/logger"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
+	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
@@ -35,6 +36,10 @@ func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error
 	if err != nil {
 		return err
 	}
+	chatInfo, err := factory.NewChat(incomingRequest)
+	if err != nil {
+		return internalerrors.RespondToError(err, botService, chatInfo)
+	}
 	// create new mongodb client
 	dbClient, err := mongodb.New(mongodb.NewDefaultConfig())
 	if err != nil {
@@ -49,11 +54,11 @@ func ExecuteCommand(ctx context.Context, incomingRequest *tgbotapi.Update) error
 	// create new search service
 	searchService := search.NewService(packageService)
 	// create new chat
-	chat, err := factory.NewChatService(incomingRequest, packageService, analyticsService, searchService, botService)
-	if chat == nil {
+	chatService, err := factory.NewChatService(chatInfo, analyticsService, searchService, botService)
+	if chatService == nil {
 		return err
 	}
-	return chat.HandleQuery()
+	return chatService.HandleQuery()
 }
 
 func parseRequest(body io.ReadCloser) (*tgbotapi.Update, error) {

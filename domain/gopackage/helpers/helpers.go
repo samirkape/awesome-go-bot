@@ -33,15 +33,6 @@ func BuildStringMessageBatch(packages []inmemory.Package, forTop bool) []string 
 	return batch
 }
 
-func packagesToMsg(packages []inmemory.Package, forTop bool) string {
-	var msg strings.Builder
-	for _, pkg := range packages {
-		msg.WriteString(PackageToMsg(pkg, forTop))
-		msg.WriteString("\n\n")
-	}
-	return msg.String()
-}
-
 func PackageToMsg(pkg inmemory.Package, forTopN bool) string {
 	var category string
 	name := cases.Title(language.AmericanEnglish).String(pkg.Name)
@@ -54,4 +45,13 @@ func PackageToMsg(pkg inmemory.Package, forTopN bool) string {
 	}
 
 	return fmt.Sprintf("%s%s%s%s", url, stars, category, info)
+}
+
+func packagesToMsg(packages []inmemory.Package, forTop bool) string {
+	var msg strings.Builder
+	for _, pkg := range packages {
+		msg.WriteString(PackageToMsg(pkg, forTop))
+		msg.WriteString("\n\n")
+	}
+	return msg.String()
 }
