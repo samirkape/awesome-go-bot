@@ -62,7 +62,7 @@ func getPkgInfoStrings(pkg inmemory.Package) []string {
 	pkgInfoStrings = append(pkgInfoStrings, nameInParts...)
 
 	// Split the package category and add its parts to the slice
-	categoryParts := strings.Split(pkg.Category, " ")
+	categoryParts := strings.Split(pkg.Category, "")
 	pkgInfoStrings = append(pkgInfoStrings, categoryParts...)
 
 	// Extract the GitHub repository name from the URL and add it to the slice
