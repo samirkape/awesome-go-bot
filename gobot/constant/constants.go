@@ -16,7 +16,7 @@ Supported commands:
 - @awsmgo_bot <i>query</i>- where query is the name or prefix of the package you want to search for
 `
 
-const Start = "Hello! I can help you find Go packages, frameworks, and libraries. Send /commands to see what I can do."
+const StartMessage = "Hello! I can help you find Go packages, frameworks, and libraries. Send /commands to see what I can do."
 
 const Description = `I can provide you with brief information about over 2,000 Go packages, frameworks, and libraries scraped from awesome-go.com. This can be a helpful resource for learning about the Go community's contributions in your free time.
 
