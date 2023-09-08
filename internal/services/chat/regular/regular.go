@@ -38,7 +38,7 @@ func NewValidatedChat(update *tgbotapi.Update) (chat.Info, error) {
 
 	chatId := update.Message.Chat.ID
 	if !strings.HasPrefix(query, constant.CommandPrefix) {
-		startCommand := commands.New().Start
+		startCommand := commands.New().Commands
 		_, err := strconv.Atoi(query)
 		if err == nil {
 			updatedQuery := fmt.Sprintf("%s%s", constant.CommandPrefix, query)
@@ -69,6 +69,8 @@ func (r *regular) HandleQuery() error {
 	command := commands.New()
 	switch chatService.GetQuery() {
 	case command.GetStart():
+		return gobot.Respond(chatService, botService, constant.StartMessage)
+	case command.GetSupportedCommands():
 		return gobot.Respond(chatService, botService, constant.SupportedCommands, withHtml)
 	case command.GetDescription():
 		return gobot.Respond(chatService, botService, constant.Description)

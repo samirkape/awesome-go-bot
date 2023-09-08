@@ -7,6 +7,7 @@ import (
 
 type Commands struct {
 	Start          string
+	Commands       string
 	ListCategories string
 	GetPackages    string
 	TopN           string
@@ -15,7 +16,8 @@ type Commands struct {
 
 func New() *Commands {
 	return &Commands{
-		Start:          "/commands",
+		Start:          "/start",
+		Commands:       "/commands",
 		ListCategories: "/listcategories",
 		GetPackages:    "/selectcategory",
 		TopN:           "/top",
@@ -25,6 +27,10 @@ func New() *Commands {
 
 func (c *Commands) GetStart() string {
 	return c.Start
+}
+
+func (c *Commands) GetSupportedCommands() string {
+	return c.Commands
 }
 
 func (c *Commands) GetListCategories() string {
