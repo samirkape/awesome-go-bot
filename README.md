@@ -12,7 +12,7 @@ Awesome-Go Bot is an interactive Telegram bot version of [Awesome-Go](https://aw
 
 2. **Filter by Star Count**: Easily filter the list based on the number of stars a GitHub repository has.
 
-3. **Top Go Repositories**: Get the top Go repositories by sending a message with "Top N," where N is any number between 0 and the maximum number of packages (approximately 2100 as of now).
+3. **Top Go Repositories**: Get the top Go repositories by sending a message with "/topN," where N is any number (cappted to 200) between 0 and the maximum number of packages (approximately 2500 as of now).
 
 4. **Search by Keyword**: You can search for packages using tags.
 
