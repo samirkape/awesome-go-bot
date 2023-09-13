@@ -58,26 +58,32 @@ func getPkgInfoStrings(pkg inmemory.Package) []string {
 	var pkgInfoStrings []string
 
 	// Add package name to the slice
-	nameInParts := strings.Split(pkg.Name, "")
-	pkgInfoStrings = append(pkgInfoStrings, nameInParts...)
+	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Name)...)
 
 	// Split the package category and add its parts to the slice
-	categoryParts := strings.Split(pkg.Category, "")
-	pkgInfoStrings = append(pkgInfoStrings, categoryParts...)
+	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Category)...)
 
 	// Extract the GitHub repository name from the URL and add it to the slice
 	urlParts := strings.Split(strings.TrimPrefix(pkg.URL, "https://github.com/"), "/")
-	pkgInfoStrings = append(pkgInfoStrings, urlParts...)
+	for _, urlPart := range urlParts {
+		pkgInfoStrings = append(pkgInfoStrings, splitString(urlPart)...)
+	}
 
 	// Split the package info and add its parts to the slice
-	infoParts := strings.Split(pkg.Info, " ")
-	pkgInfoStrings = append(pkgInfoStrings, infoParts...)
+	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Info)...)
 
 	// convert all strings to lowercase
 	for i := 0; i < len(pkgInfoStrings); i++ {
 		pkgInfoStrings[i] = strings.ToLower(pkgInfoStrings[i])
 	}
 	return pkgInfoStrings
+}
+
+func splitString(pkg string) []string {
+	var stringToChars []string
+	chars := strings.Split(pkg, "")
+	stringToChars = append(stringToChars, chars...)
+	return stringToChars
 }
 
 // InsertPackageInfo inserts package information strings into the trie
