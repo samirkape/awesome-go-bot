@@ -5,6 +5,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/samirkape/awesome-go-bot/gobot"
+	"github.com/samirkape/awesome-go-bot/internal/logger"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat"
 )
 
@@ -28,16 +29,15 @@ func NewValidationError(message string, placeHolder ...interface{}) ValidationEr
 	}
 }
 
-func RespondToError(err error, botService *tgbotapi.BotAPI, chatService chat.Info) error {
+func RespondToError(err error, botService *tgbotapi.BotAPI, chatService chat.Info) {
 	if err == nil {
-		return nil
+		return
 	}
 	var validationError ValidationError
 	if errors.As(err, &validationError) {
 		err := gobot.Respond(chatService, botService, validationError.Error())
 		if err != nil {
-			return err
+			logger.FieldLogger("failed responding to error", err.Error())
 		}
 	}
-	return err
 }

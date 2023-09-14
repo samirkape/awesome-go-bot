@@ -37,7 +37,8 @@ func ExecuteCommand(incomingRequest *tgbotapi.Update) error {
 	// create new chat
 	chatInfo, err := chatfactory.New(incomingRequest)
 	if err != nil {
-		return internalerrors.RespondToError(err, botService, chatInfo)
+		internalerrors.RespondToError(err, botService, chatInfo)
+		return err
 	}
 	// create new mongodb client
 	client, err := mongodb.New(mongodb.WithDefaultConfig())

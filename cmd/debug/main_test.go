@@ -18,6 +18,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"testing"
 	"time"
 )
 
@@ -28,26 +29,22 @@ func init() {
 	}
 }
 
-func main() {
-	_ = defaultTest()
-}
-
-func defaultTest() error {
+func TestMemory(t *testing.T) {
 	// create new bot
 	botService, err := gobot.New(config.NewConfig(os.Getenv("TRIAL_BOT_TOKEN")))
 	if err != nil {
-		return err
+		t.Fatalf("unable to create bot")
 	}
 	// create new mongodb client
 	dbClient, err := mongodb.New(mongodb.WithDefaultConfig())
 	if err != nil {
-		return err
+		t.Fatalf("unable to create db client")
 	}
 	packageService := packages.NewService(dbClient)
 	// get all analyticsService from the database
 	analyticsService := analytics.NewService(packageService)
 	if err != nil {
-		return err
+		t.Fatalf("unable to create analytics service")
 	}
 	// create new search service
 	searchService := search.NewService(packageService)
@@ -65,12 +62,15 @@ func defaultTest() error {
 		chatService, err := factory.NewService(newChat, analyticsService, searchService, botService)
 		log.Println(err)
 		logger.FieldLogger("query: ", chatService.GetQuery()).Info("query received")
-		chatService.HandleQuery()
+		err = chatService.HandleQuery()
+		if err != nil {
+			t.Errorf(err.Error())
+		}
+		return
 	}
-	return nil
 }
 
-func searchTest() {
+func TestSearch(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		start := time.Now()
 		dbClient, _ := mongodb.New(mongodb.WithDefaultConfig())
@@ -84,7 +84,7 @@ func searchTest() {
 	}
 }
 
-func webhookTest() {
+func TestWebhook(t *testing.T) {
 	// Define the URL to which you want to send the request.
 	url := "https://example.com/api/endpoint"
 
