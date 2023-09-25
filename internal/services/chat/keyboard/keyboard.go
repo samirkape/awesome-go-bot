@@ -14,6 +14,7 @@ import (
 var index, messageId int
 var messages []string
 var packages []inmemory.Package
+var includeCategoryInMessage bool
 
 type keyboardChat struct {
 	chat.Info
@@ -62,7 +63,6 @@ func (k keyboardChat) HandleQuery() error {
 	botService := k.BotAPI
 	query := chatService.GetQuery()
 	command := commands.New()
-	includeCategoryInMessage := true
 
 	var err error
 
@@ -72,6 +72,7 @@ func (k keyboardChat) HandleQuery() error {
 
 	switch query {
 	case command.IsTopN(chatService.GetQuery()):
+		includeCategoryInMessage = true
 		packages = analyticsService.GetTopPackagesSortedByStars(chatService.GetQuery())
 	case command.IsCategoryNumber(chatService.GetQuery()):
 		includeCategoryInMessage = false
