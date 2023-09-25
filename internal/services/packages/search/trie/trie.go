@@ -58,19 +58,20 @@ func getPkgInfoStrings(pkg inmemory.Package) []string {
 	var pkgInfoStrings []string
 
 	// Add package name to the slice
-	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Name)...)
+	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Name, "")...)
 
 	// Split the package category and add its parts to the slice
-	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Category)...)
+	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Category, "")...)
 
 	// Extract the GitHub repository name from the URL and add it to the slice
 	urlParts := strings.Split(strings.TrimPrefix(pkg.URL, "https://github.com/"), "/")
 	for _, urlPart := range urlParts {
-		pkgInfoStrings = append(pkgInfoStrings, splitString(urlPart)...)
+		pkgInfoStrings = append(pkgInfoStrings, splitString(urlPart, "")...)
+		break // no need to add the rest of the parts of the URL since it is already added in the package name
 	}
 
 	// Split the package info and add its parts to the slice
-	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Info)...)
+	pkgInfoStrings = append(pkgInfoStrings, splitString(pkg.Info, " ")...)
 
 	// convert all strings to lowercase
 	for i := 0; i < len(pkgInfoStrings); i++ {
@@ -79,9 +80,9 @@ func getPkgInfoStrings(pkg inmemory.Package) []string {
 	return pkgInfoStrings
 }
 
-func splitString(pkg string) []string {
+func splitString(pkg string, ch string) []string {
 	var stringToChars []string
-	chars := strings.Split(pkg, "")
+	chars := strings.Split(pkg, ch)
 	stringToChars = append(stringToChars, chars...)
 	return stringToChars
 }
