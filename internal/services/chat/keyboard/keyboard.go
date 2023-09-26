@@ -5,8 +5,8 @@ import (
 	"github.com/samirkape/awesome-go-bot/domain/gopackage/helpers"
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/commands"
+	"github.com/samirkape/awesome-go-bot/internal/errors"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat"
-	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 )
@@ -24,7 +24,7 @@ type keyboardChat struct {
 
 func NewChat(update *tgbotapi.Update) (chat.Info, error) {
 	if update.CallbackQuery == nil {
-		return nil, internalerrors.NewValidationError("callback query is nil")
+		return nil, errors.NewValidationError("callback query is nil")
 	}
 	query := update.CallbackQuery
 	return &keyboardChat{

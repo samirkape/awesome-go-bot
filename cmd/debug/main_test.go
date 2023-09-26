@@ -9,9 +9,9 @@ import (
 	"github.com/samirkape/awesome-go-bot/domain/gopackage/mongodb"
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/config"
+	"github.com/samirkape/awesome-go-bot/internal/errors"
 	"github.com/samirkape/awesome-go-bot/internal/logger"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
-	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
@@ -57,7 +57,7 @@ func TestMemory(t *testing.T) {
 		// create new chat
 		newChat, err := factory.New(&update)
 		if err != nil {
-			internalerrors.RespondToError(err, botService, newChat)
+			errors.RespondToError(err, botService, newChat)
 		}
 		chatService, err := factory.NewService(newChat, analyticsService, searchService, botService)
 		log.Println(err)
@@ -66,7 +66,6 @@ func TestMemory(t *testing.T) {
 		if err != nil {
 			t.Errorf(err.Error())
 		}
-		return
 	}
 }
 

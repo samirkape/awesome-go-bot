@@ -7,9 +7,9 @@ import (
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/commands"
 	"github.com/samirkape/awesome-go-bot/gobot/constant"
+	"github.com/samirkape/awesome-go-bot/internal/errors"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat/keyboard"
-	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"strconv"
 	"strings"
@@ -28,12 +28,12 @@ var nonNumericQueryError = "query cannot be parsed, try"
 
 func NewValidatedChat(update *tgbotapi.Update) (chat.Info, error) {
 	if update.Message == nil {
-		return nil, internalerrors.NewValidationError(emptyUpdateError)
+		return nil, errors.NewValidationError(emptyUpdateError)
 	}
 
 	query := strings.TrimSpace(update.Message.Text)
 	if query == "" {
-		return nil, internalerrors.NewValidationError(emptyQueryError)
+		return nil, errors.NewValidationError(emptyQueryError)
 	}
 
 	chatId := update.Message.Chat.ID
@@ -42,9 +42,9 @@ func NewValidatedChat(update *tgbotapi.Update) (chat.Info, error) {
 		_, err := strconv.Atoi(query)
 		if err == nil {
 			updatedQuery := fmt.Sprintf("%s%s", constant.CommandPrefix, query)
-			return newRegular(chatId, query), internalerrors.NewValidationError(invalidQueryError, updatedQuery)
+			return newRegular(chatId, query), errors.NewValidationError(invalidQueryError, updatedQuery)
 		} else if update.Message.ViaBot == nil {
-			return newRegular(chatId, query), internalerrors.NewValidationError(nonNumericQueryError, startCommand)
+			return newRegular(chatId, query), errors.NewValidationError(nonNumericQueryError, startCommand)
 		}
 	}
 

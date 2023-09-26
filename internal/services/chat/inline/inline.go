@@ -2,8 +2,8 @@ package inline
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samirkape/awesome-go-bot/internal/errors"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat"
-	"github.com/samirkape/awesome-go-bot/internal/services/internalerrors"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 	"log"
@@ -19,7 +19,7 @@ type inlineChat struct {
 
 func NewChat(update *tgbotapi.Update) (chat.Info, error) {
 	if update.InlineQuery == nil {
-		return &chat.Chat{}, internalerrors.NewValidationError("inline query is nil")
+		return &chat.Chat{}, errors.NewValidationError("inline query is nil")
 	}
 	query := strings.TrimSpace(update.InlineQuery.Query)
 	return inlineChat{Info: &chat.Chat{
@@ -61,7 +61,7 @@ func (i inlineChat) HandleQuery() error {
 }
 
 func createInlineQueryArticle(packages []inmemory.Package, results []interface{}) []interface{} {
-	for i, _ := range packages {
+	for i := range packages {
 		article := tgbotapi.NewInlineQueryResultArticle(
 			strconv.Itoa(i),
 			packages[i].Name,
