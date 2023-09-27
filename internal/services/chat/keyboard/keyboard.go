@@ -2,10 +2,10 @@ package keyboard
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/samirkape/awesome-go-bot/domain/gopackage/helpers"
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/commands"
 	"github.com/samirkape/awesome-go-bot/internal/errors"
+	"github.com/samirkape/awesome-go-bot/internal/helpers"
 	"github.com/samirkape/awesome-go-bot/internal/services/chat"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"

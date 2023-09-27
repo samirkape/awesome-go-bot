@@ -2,8 +2,8 @@ package packages
 
 import (
 	"context"
-	"github.com/samirkape/awesome-go-bot/domain/gopackage/mongodb"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"

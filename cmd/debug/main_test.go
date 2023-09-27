@@ -6,7 +6,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
 	awesome_go_bot "github.com/samirkape/awesome-go-bot"
-	"github.com/samirkape/awesome-go-bot/domain/gopackage/mongodb"
 	"github.com/samirkape/awesome-go-bot/gobot"
 	"github.com/samirkape/awesome-go-bot/gobot/config"
 	"github.com/samirkape/awesome-go-bot/internal/errors"
@@ -14,6 +13,7 @@ import (
 	"github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
+	mongodb2 "github.com/samirkape/awesome-go-bot/internal/services/packages/mongodb"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 	"log"
 	"net/http"
@@ -36,7 +36,7 @@ func TestMemory(t *testing.T) {
 		t.Fatalf("unable to create bot")
 	}
 	// create new mongodb client
-	dbClient, err := mongodb.New(mongodb.WithDefaultConfig())
+	dbClient, err := mongodb2.New(mongodb2.WithDefaultConfig())
 	if err != nil {
 		t.Fatalf("unable to create db client")
 	}
@@ -72,7 +72,7 @@ func TestMemory(t *testing.T) {
 func TestSearch(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		start := time.Now()
-		dbClient, _ := mongodb.New(mongodb.WithDefaultConfig())
+		dbClient, _ := mongodb2.New(mongodb2.WithDefaultConfig())
 		packageService := packages.NewService(dbClient)
 		searchService := search.NewService(packageService)
 		res := searchService.Search("kube")
