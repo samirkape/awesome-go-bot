@@ -10,7 +10,7 @@ import (
 	chatfactory "github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
-	mongodb2 "github.com/samirkape/awesome-go-bot/internal/services/packages/mongodb"
+	mongodb "github.com/samirkape/awesome-go-bot/internal/services/packages/mongodb"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 	"io"
 	"log"
@@ -41,7 +41,7 @@ func ExecuteCommand(incomingRequest *tgbotapi.Update) error {
 		return err
 	}
 	// create new mongodb client
-	client, err := mongodb2.New(mongodb2.WithDefaultConfig())
+	client, err := mongodb.New(mongodb.WithDefaultConfig())
 	if err != nil {
 		return err
 	}
