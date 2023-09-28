@@ -73,12 +73,12 @@ func (a AllPackages) GetPackagesByCategoryNumber(query string) ([]Package, error
 // TODO optimize this
 func (a AllPackages) GetTopPackagesSortedByStars(query string) []Package {
 	var packages []Package
-	n, err := getNumberOutOfQuery(query)
-	if err != nil {
-		return nil
-	}
 	for _, v := range a {
 		packages = append(packages, v...)
+	}
+	n, err := getNumberOutOfQuery(query)
+	if err != nil {
+		n = len(packages)
 	}
 	sort.Slice(packages, func(i, j int) bool {
 		return packages[i].Stars > packages[j].Stars
