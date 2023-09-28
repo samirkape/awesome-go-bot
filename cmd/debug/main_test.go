@@ -84,7 +84,6 @@ func TestSearch(t *testing.T) {
 }
 
 func TestWebhook(t *testing.T) {
-	// Define the URL to which you want to send the request.
 	url := "https://example.com/api/endpoint"
 
 	// Define the payload as a string.
