@@ -109,7 +109,6 @@ func TestWebhook(t *testing.T) {
 		}
 		}`
 
-	// Create a new POST request with the payload.
 	req, err := http.NewRequest("POST", url, bytes.NewBufferString(payload))
 	if err != nil {
 		fmt.Println("Error creating request:", err)
