@@ -57,7 +57,6 @@ func (c *Client) listCollections(databaseName string) (collections []string) {
 }
 
 func (c *Client) getPackagesByCollectionName(databaseName string, collectionName string) ([]inmemory.Package, error) {
-	cursor := &mongo.Cursor{}
 	filter := bson.D{}
 	ctx := context.TODO()
 	packages := []inmemory.Package{}
