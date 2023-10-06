@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/samirkape/awesome-go-bot)](https://goreportcard.com/report/github.com/samirkape/awesome-go-bot)
+
 # Awesome-Go Bot
 
 [Join the Telegram Bot](https://t.me/awsmgo_bot)
