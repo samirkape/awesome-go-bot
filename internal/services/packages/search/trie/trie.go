@@ -103,6 +103,7 @@ func insertPackageInfo(t *trie.Trie, pkgInfoStrings []string, pkg inmemory.Packa
 
 func searchTrie(index *trie.Trie, query string, exact bool) *trie.SearchResults {
 	var results *trie.SearchResults
+	query = strings.TrimSuffix(query, " ")
 	querySlice := strings.Split(query, "")
 	if exact {
 		results = index.Search(querySlice, trie.WithMaxResults(1))
