@@ -37,12 +37,19 @@ func (c *Commands) GetListCategories() string {
 	return c.ListCategories
 }
 
-func (c *Commands) GetGetPackages() string {
+func (c *Commands) GetPackages() string {
 	return c.GetPackages
 }
 
 func (c *Commands) IsTopN(query string) string {
 	if strings.HasPrefix(query, c.TopN) {
+		return query
+	}
+	return "nope"
+}
+
+func (c *Commands) IsTop(query string) string {
+	if strings.HasPrefix(query, c.Top) { // TODO
 		return query
 	}
 	return "nope"
