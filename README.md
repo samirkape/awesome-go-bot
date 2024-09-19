@@ -36,16 +36,3 @@ The Awesome-Go Bot is built using the following technologies:
 - **Telegram Bot API**: The bot communicates with users via Telegram's API.
 
 - **Go 1.21**: The programming language used for building the bot's backend.
-
-## TODO
-
-Here are some of the planned enhancements and features for the Awesome-Go Bot:
-
-- [x] Search by Tags: You can search for packages using tags.
-
-- [x] Meta Command: Fetch metadata, including the number of packages and the last updated time.
-
-- [ ] LRU Cache: Implement an LRU cache to reduce Google Cloud Function's cold boot time.
-
-- [x] Inline Mode: Group multiple messages and fetch Golang articles from dev.to corresponding to package category/tag.
-
