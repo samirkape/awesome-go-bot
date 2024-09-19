@@ -2,8 +2,18 @@ package helpers
 
 import (
 	"fmt"
+	"github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/samirkape/awesome-go-bot/gobot"
+	"github.com/samirkape/awesome-go-bot/gobot/config"
 	"github.com/samirkape/awesome-go-bot/gobot/constant"
+	"github.com/samirkape/awesome-go-bot/internal/errors"
+	"github.com/samirkape/awesome-go-bot/internal/logger"
+	"github.com/samirkape/awesome-go-bot/internal/services/chat/factory"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics"
 	"github.com/samirkape/awesome-go-bot/internal/services/packages/analytics/inmemory"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/mongodb"
+	"github.com/samirkape/awesome-go-bot/internal/services/packages/search"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"strings"
@@ -57,4 +67,39 @@ func packagesToMsg(packages []inmemory.Package, forTop bool) string {
 		msg.WriteString("\n\n")
 	}
 	return msg.String()
+}
+
+func ExecuteCommand(incomingRequest *tgbotapi.Update) error {
+	// create new bot
+	botService, err := gobot.New(config.WithDefaultConfig())
+	if err != nil {
+		return err
+	}
+	// create new chat
+	chatInfo, err := factory.New(incomingRequest)
+	if err != nil {
+		errors.RespondToError(err, botService, chatInfo)
+		return err
+	}
+	// create new mongodb client
+	client, err := mongodb.New(mongodb.WithDefaultConfig())
+	if err != nil {
+		return err
+	}
+	// create package service from mongodb client
+	packageService := packages.NewService(client)
+	// create analytics interface from package service
+	analyticsService := analytics.NewService(packageService)
+	if err != nil {
+		return err
+	}
+	// create new search service based on package service
+	searchService := search.NewService(packageService)
+	// create new chat service
+	chatService, err := factory.NewService(chatInfo, analyticsService, searchService, botService)
+	if chatService == nil {
+		return err
+	}
+	logger.FieldLogger("query: ", chatService.GetQuery()).Info("query received")
+	return chatService.HandleQuery()
 }
