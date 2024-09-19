@@ -35,4 +35,4 @@ The Awesome-Go Bot is built using the following technologies:
 
 - **Telegram Bot API**: The bot communicates with users via Telegram's API.
 
-- **Go 1.21**: The programming language used for building the bot's backend.
+- **Go 1.23**: The programming language used for building the bot's backend.
